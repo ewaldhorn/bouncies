@@ -1,0 +1,5 @@
+package main
+
+const HOMEBASE_DEFAULT_HEALTH int = 1000
+const DEFAULT_BASE_COUNT int = 2
+const DEFAULT_BASE_OFFSET_BUFFER float32 = 5.0

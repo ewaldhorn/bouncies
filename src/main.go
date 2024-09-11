@@ -22,6 +22,7 @@ func main() {
 	ebiten.SetTPS(60)
 
 	game := Game{count: BOUNCERS, lineWidth: 2.0}
+	game.initNewGame()
 	game.initBouncers()
 
 	err := ebiten.RunGame(&game)

@@ -2,19 +2,47 @@ package main
 
 import (
 	"fmt"
+	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/hajimehoshi/ebiten/v2/vector"
+	"golang.org/x/exp/rand"
 )
 
 // ----------------------------------------------------------------------------
 type Game struct {
 	count       int
+	bases       []HomeBase
 	bouncers    []Bouncer
 	pressedKeys []ebiten.Key
 	lineWidth   float32
+}
+
+// ----------------------------------------------------------------------------
+func (g *Game) initNewGame() {
+	g.bases = make([]HomeBase, DEFAULT_BASE_COUNT)
+
+	playerBase := HomeBase{radius: 30, baseColour: color.RGBA{
+		R: uint8(rand.Intn(255)),
+		G: uint8(rand.Intn(255)),
+		B: uint8(rand.Intn(255)),
+		A: 255,
+	}}
+	playerBase.xPos = playerBase.radius + DEFAULT_BASE_OFFSET_BUFFER
+	playerBase.yPos = float32(SCREEN_HEIGHT) - playerBase.radius - DEFAULT_BASE_OFFSET_BUFFER
+
+	enemyBase := HomeBase{radius: 30, baseColour: color.RGBA{
+		R: uint8(rand.Intn(255)),
+		G: uint8(rand.Intn(255)),
+		B: uint8(rand.Intn(255)),
+		A: 255,
+	}}
+	enemyBase.xPos = float32(SCREEN_WIDTH) - enemyBase.radius - DEFAULT_BASE_OFFSET_BUFFER
+	enemyBase.yPos = enemyBase.radius + DEFAULT_BASE_OFFSET_BUFFER
+
+	g.bases = append(g.bases, playerBase, enemyBase)
 }
 
 // ----------------------------------------------------------------------------
@@ -75,6 +103,10 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		float32(lastBouncer.positionX), float32(lastBouncer.positionY),
 		float32(g.bouncers[0].positionX), float32(g.bouncers[0].positionY),
 		g.lineWidth, lastBouncer.colour, true)
+
+	for i := 0; i < len(g.bases); i++ {
+		g.bases[i].Draw(screen)
+	}
 }
 
 // ----------------------------------------------------------------------------
