@@ -6,9 +6,11 @@ A simple game written in Go and Ebitengine.
 
 I used a variety of technologies to make this all happen:
 
-- Go: <https://go.dev/>
-- Ebitengine: <https://ebitengine.org/>
-- Task: <https://taskfile.dev/>
+| Tech       | Where                     | Why                            |
+| ---------- | ------------------------- | ------------------------------ |
+| Go         | <https://go.dev/>         | Development language of choice |
+| Ebitengine | <https://ebitengine.org/> | Great 2D engine, with WASM     |
+| Task       | <https://taskfile.dev/>   | Build tool of choice           |
 
 ### Tasks
 
