@@ -1,0 +1,55 @@
+# https://taskfile.dev
+
+version: "3"
+
+vars:
+  OUTPUT_FOLDER: ./bin/
+  PROJECT_NAME: bouncies
+
+tasks:
+  default:
+    desc: Lists available tasks
+    cmds:
+      - task --list-all
+    silent: true
+  clean:
+    desc: Removes the '{{.OUTPUT_FOLDER}}' folder
+    cmds:
+      - rm -rf {{.OUTPUT_FOLDER}}
+    silent: true
+  setupexecjs:
+    desc: Copies the wasm_exec.js and html files to the '{{.OUTPUT_FOLDER}}' folder
+    cmds:
+      - mkdir -p {{.OUTPUT_FOLDER}}
+      - cp $(go env GOROOT)/misc/wasm/wasm_exec.js {{.OUTPUT_FOLDER}}
+      - cp ./html/* {{.OUTPUT_FOLDER}}
+    silent: true
+  test:
+    desc: Runs the desktop project
+    cmds:
+      - go run ./src/.
+    silent: true
+  run:
+    desc: Runs the files in the {{.OUTPUT_FOLDER}} folder as-is, no build steps envoked. On port 9000
+    dir: "{{.OUTPUT_FOLDER}}"
+    cmds:
+      - http-server . -p 9000 -o -c-1
+    silent: true
+  runwasm:
+    desc: Runs the project in WASM on port 9000
+    cmds:
+      - go run github.com/hajimehoshi/wasmserve@latest -http :9000 ./src/.
+    silent: true
+  buildwasm:
+    desc: Builds the WASM project
+    cmds:
+      - mkdir -p bin
+      - task setupexecjs
+      - env GOOS=js GOARCH=wasm go build -o {{.OUTPUT_FOLDER}}{{.PROJECT_NAME}}.wasm ./src/.
+    silent: true
+  buildproduction:
+    desc: Builds a production WASM binary, minus debug information
+    cmds:
+      - task setupexecjs
+      - env GOOS=js GOARCH=wasm go build src/. -ldflags="-s -w" -o {{.OUTPUT_FOLDER}}{{.PROJECT_NAME}}.wasm ./src/.
+    silent: true
