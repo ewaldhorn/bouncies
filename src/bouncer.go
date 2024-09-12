@@ -6,7 +6,6 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
-	"golang.org/x/exp/rand"
 )
 
 // ----------------------------------------------------------------------------
@@ -19,23 +18,27 @@ type Bouncer struct {
 }
 
 // ----------------------------------------------------------------------------
-func (b *Bouncer) init(side int, start Vector2D) {
-	b.side = side
-	b.xPos = start.x
-	b.yPos = start.y
+func (b *Bouncer) init(homeBase HomeBase) {
+	b.side = homeBase.side
+	b.xPos = homeBase.aimPoint.x
+	b.yPos = homeBase.aimPoint.y
 
-	if rand.Int()%2 == 0 {
-		b.movementX = 1
-		b.movementY = -1
-	} else {
-		b.movementX = -1
-		b.movementY = 1
-	}
+	b.colour = homeBase.baseColour
 
 	if b.side == PLAYER_SIDE {
-		b.colour = COLOUR_GREEN
+		if b.xPos <= homeBase.xPos {
+			b.movementX = -1
+		} else {
+			b.movementX = 1
+		}
+
+		if b.yPos <= homeBase.yPos {
+			b.movementY = -1
+		} else {
+			b.movementY = 1
+		}
 	} else {
-		b.colour = COLOUR_RED
+		// TODO:  Enemy bouncer movement
 	}
 
 	// TODO: Clean up magic values
