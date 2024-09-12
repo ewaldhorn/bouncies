@@ -10,10 +10,12 @@ import (
 
 // ----------------------------------------------------------------------------
 type HomeBase struct {
-	health, maxHealth  int
-	xPos, yPos, radius float32
-	baseColour         color.RGBA
-	antialias          bool
+	health, maxHealth                      int
+	ticksTillHealthRegeneration            int
+	bouncersAvailable, ticksTillNewBouncer int
+	xPos, yPos, radius                     float32
+	baseColour                             color.RGBA
+	antialias                              bool
 }
 
 // ----------------------------------------------------------------------------
@@ -23,6 +25,34 @@ func (h *HomeBase) init(x, y float32) {
 	h.health = h.maxHealth
 	h.xPos = x
 	h.yPos = y
+	h.ticksTillNewBouncer = 1
+	h.ticksTillHealthRegeneration = DEFAULT_TICKS_PER_SHIELD_REGEN
+}
+
+// ----------------------------------------------------------------------------
+// Handles respawning of bouncers and shield regeneration
+func (h *HomeBase) Update() {
+	h.ticksTillNewBouncer -= 1
+	if h.ticksTillNewBouncer <= 0 {
+		if h.bouncersAvailable < DEFAULT_MAX_BOUNCERS {
+			// spawn a new bouncer, ready to be deployed by the player
+			h.bouncersAvailable += 1
+			h.ticksTillNewBouncer = DEFAULT_TICKS_PER_BOUNCER_RESPAWN
+		} else {
+			// can't spawn yet, wait
+			h.ticksTillNewBouncer = 1
+		}
+	}
+
+	h.ticksTillHealthRegeneration -= 1
+	if h.ticksTillHealthRegeneration <= 0 {
+		h.ticksTillHealthRegeneration = DEFAULT_TICKS_PER_SHIELD_REGEN
+		if h.health < (h.maxHealth - 5) {
+			h.health += 5
+		} else {
+			h.health = h.maxHealth
+		}
+	}
 }
 
 // ----------------------------------------------------------------------------

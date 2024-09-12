@@ -66,6 +66,11 @@ func (g *Game) Update() error {
 		}
 	}
 
+	for pos, base := range g.bases {
+		base.Update()
+		g.bases[pos] = base
+	}
+
 	return nil
 }
 

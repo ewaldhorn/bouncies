@@ -7,6 +7,9 @@ import (
 const DEFAULT_HOMEBASE_HEALTH int = 1000
 const DEFAULT_BASE_COUNT int = 2
 const DEFAULT_BASE_OFFSET_BUFFER float32 = 5.0
+const DEFAULT_TICKS_PER_BOUNCER_RESPAWN int = 180
+const DEFAULT_TICKS_PER_SHIELD_REGEN int = 15
+const DEFAULT_MAX_BOUNCERS int = 6
 
 // ----------------------------------------------------------------------------
 // Game colours
