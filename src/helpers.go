@@ -8,6 +8,8 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
+// ----------------------------------------------------------------------------
+// See https://ebitengine.org/en/examples/vector.html for more information
 var (
 	whiteImage = ebiten.NewImage(3, 3)
 
@@ -16,6 +18,7 @@ var (
 	whiteSubImage = whiteImage.SubImage(image.Rect(1, 1, 2, 2)).(*ebiten.Image)
 )
 
+// ----------------------------------------------------------------------------
 func init() {
 	whiteImage.Fill(color.White)
 }
