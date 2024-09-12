@@ -33,9 +33,15 @@ func (g *Game) Update() error {
 
 		for _, key := range g.pressedKeys {
 			switch key.String() {
+			case "ArrowUp":
+				g.bases[0].AdjustAttackAngle(-4.0)
+				g.bases[1].AdjustAttackAngle(-4.0)
+			case "ArrowDown":
+				g.bases[0].AdjustAttackAngle(4.0)
+				g.bases[1].AdjustAttackAngle(4.0)
 			case "Space":
 				b := Bouncer{}
-				b.init(PLAYER_SIDE)
+				b.init(PLAYER_SIDE, g.bases[0].aimPoint)
 				g.bouncers = append(g.bouncers, b)
 			}
 		}
@@ -57,7 +63,7 @@ func (g *Game) Update() error {
 // ----------------------------------------------------------------------------
 func (g *Game) Draw(screen *ebiten.Image) {
 	vector.StrokeRect(screen, 1, 1, float32(SCREEN_WIDTH-1), float32(SCREEN_HEIGHT-1), 0.5, COLOUR_DARK_GRAY, true)
-	str := fmt.Sprintf("We are at roughly %.0f FPS, more or less. Focus: %t", ebiten.ActualFPS(), ebiten.IsFocused())
+	str := fmt.Sprintf("We are at roughly %.0f FPS, more or less. Focus: %t, Angle: %.0f", ebiten.ActualFPS(), ebiten.IsFocused(), g.bases[0].attackAngle)
 	ebitenutil.DebugPrint(screen, str)
 
 	for i := 0; i < len(g.bouncers); i++ {

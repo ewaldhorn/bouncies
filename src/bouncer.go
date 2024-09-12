@@ -19,10 +19,10 @@ type Bouncer struct {
 }
 
 // ----------------------------------------------------------------------------
-func (b *Bouncer) init(side int) {
+func (b *Bouncer) init(side int, start Vector2D) {
 	b.side = side
-	b.xPos = float32(rand.Intn(SCREEN_WIDTH))
-	b.yPos = float32(rand.Intn(SCREEN_HEIGHT))
+	b.xPos = start.x
+	b.yPos = start.y
 
 	if rand.Int()%2 == 0 {
 		b.movementX = 1
