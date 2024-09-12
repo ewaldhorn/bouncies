@@ -19,6 +19,13 @@ type HomeBase struct {
 }
 
 // ----------------------------------------------------------------------------
+type Vector2D struct {
+	x, y float32
+}
+
+var BouncerOffsets = []Vector2D{{x: -10, y: -5}, {x: 0, y: -5}, {x: 10, y: -5}, {x: -10, y: 5}, {x: 0, y: 5}, {x: 10, y: 5}}
+
+// ----------------------------------------------------------------------------
 // Sets up a HomeBase with default values
 func (h *HomeBase) init(x, y float32) {
 	h.maxHealth = DEFAULT_HOMEBASE_HEALTH
@@ -79,7 +86,9 @@ func (h HomeBase) Draw(screen *ebiten.Image) {
 	vector.DrawFilledCircle(screen, h.xPos, h.yPos, h.radius-1, h.baseColour, h.antialias)
 
 	// finally, draw available bouncers
-
+	for pos := range h.bouncersAvailable {
+		vector.DrawFilledCircle(screen, h.xPos+BouncerOffsets[pos].x, h.yPos+BouncerOffsets[pos].y, 4, color.White, h.antialias)
+	}
 }
 
 // ========================================================== Utility Functions
