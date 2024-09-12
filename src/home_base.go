@@ -19,7 +19,7 @@ type HomeBase struct {
 }
 
 // ----------------------------------------------------------------------------
-// Sets up a HomeBase with sane values
+// Sets up a HomeBase with default values
 func (h *HomeBase) init(x, y float32) {
 	h.maxHealth = DEFAULT_HOMEBASE_HEALTH
 	h.health = h.maxHealth
@@ -66,16 +66,35 @@ func (h *HomeBase) TakeDamage(amount int) {
 }
 
 // ----------------------------------------------------------------------------
+// Renders the HomeBase on to the provided screen
 func (h HomeBase) Draw(screen *ebiten.Image) {
-	healthInPercentage := 360 * (float32(h.health*100/1000) / 100)
+	healthInPercentage := 360 * (float32(h.health*100/DEFAULT_HOMEBASE_HEALTH) / 100)
 	radians := healthInPercentage * (math.Pi / 180)
 	//fmt.Println("For health at ", h.health, "of", h.maxHealth, "we get", healthInPercentage, "radians", radians)
-	// draw shield
+
+	// first draw shield
 	drawArc(screen, h.xPos, h.yPos, h.radius, 0.0, radians)
 
-	// draw base
+	// now draw base
 	vector.DrawFilledCircle(screen, h.xPos, h.yPos, h.radius-1, h.baseColour, h.antialias)
+
+	// finally, draw available bouncers
 
 }
 
+// ========================================================== Utility Functions
+// Handy for doing odd jobs that are semi-related to the HomeBase struct
+
 // ----------------------------------------------------------------------------
+func createPlayerHomeBase() HomeBase {
+	playerBase := HomeBase{radius: 30, baseColour: COLOUR_GREEN, antialias: true}
+	playerBase.init(playerBase.radius+DEFAULT_BASE_OFFSET_BUFFER, float32(SCREEN_HEIGHT)-playerBase.radius-DEFAULT_BASE_OFFSET_BUFFER)
+	return playerBase
+}
+
+// ----------------------------------------------------------------------------
+func createEnemyHomeBase() HomeBase {
+	enemyBase := HomeBase{radius: 30, baseColour: COLOUR_RED, antialias: true}
+	enemyBase.init(float32(SCREEN_WIDTH)-enemyBase.radius-DEFAULT_BASE_OFFSET_BUFFER, enemyBase.radius+DEFAULT_BASE_OFFSET_BUFFER)
+	return enemyBase
+}

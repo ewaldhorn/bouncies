@@ -20,15 +20,7 @@ type Game struct {
 
 // ----------------------------------------------------------------------------
 func (g *Game) initNewGame() {
-	g.bases = make([]HomeBase, 0)
-
-	playerBase := HomeBase{radius: 30, baseColour: COLOUR_GREEN, antialias: true}
-	playerBase.init(playerBase.radius+DEFAULT_BASE_OFFSET_BUFFER, float32(SCREEN_HEIGHT)-playerBase.radius-DEFAULT_BASE_OFFSET_BUFFER)
-
-	enemyBase := HomeBase{radius: 30, baseColour: COLOUR_RED, antialias: true}
-	enemyBase.init(float32(SCREEN_WIDTH)-enemyBase.radius-DEFAULT_BASE_OFFSET_BUFFER, enemyBase.radius+DEFAULT_BASE_OFFSET_BUFFER)
-
-	g.bases = append(g.bases, playerBase, enemyBase)
+	g.bases = []HomeBase{createPlayerHomeBase(), createEnemyHomeBase()}
 }
 
 // ----------------------------------------------------------------------------
