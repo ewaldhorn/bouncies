@@ -1,5 +1,8 @@
 package main
 
+const PLAYER_SIDE int = 0
+const ENEMY_SIDE int = 1
+
 const DEFAULT_HOMEBASE_HEALTH int = 1000
 const DEFAULT_BASE_COUNT int = 2
 const DEFAULT_BASE_OFFSET_BUFFER float32 = 5.0

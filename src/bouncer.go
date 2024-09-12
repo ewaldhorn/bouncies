@@ -2,21 +2,27 @@ package main
 
 import (
 	"image/color"
+	"math"
 
+	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/vector"
 	"golang.org/x/exp/rand"
 )
 
 // ----------------------------------------------------------------------------
 type Bouncer struct {
-	positionX, positionY float64
-	movementX, movementY float64
+	side                 int
+	health, maxHealth    int
+	xPos, yPos, radius   float32
+	movementX, movementY float32
 	colour               color.RGBA
 }
 
 // ----------------------------------------------------------------------------
-func (b *Bouncer) init() {
-	b.positionX = float64(rand.Intn(SCREEN_WIDTH))
-	b.positionY = float64(rand.Intn(SCREEN_HEIGHT))
+func (b *Bouncer) init(side int) {
+	b.side = side
+	b.xPos = float32(rand.Intn(SCREEN_WIDTH))
+	b.yPos = float32(rand.Intn(SCREEN_HEIGHT))
 
 	if rand.Int()%2 == 0 {
 		b.movementX = 1
@@ -26,23 +32,41 @@ func (b *Bouncer) init() {
 		b.movementY = 1
 	}
 
-	b.colour = color.RGBA{
-		R: uint8(rand.Intn(255)),
-		G: uint8(rand.Intn(255)),
-		B: uint8(rand.Intn(255)),
-		A: 255,
+	if b.side == PLAYER_SIDE {
+		b.colour = COLOUR_GREEN
+	} else {
+		b.colour = COLOUR_RED
 	}
+
+	// TODO: Clean up magic values
+	b.radius = 8
+	b.maxHealth = 100
+	b.health = b.maxHealth
 }
 
 // ----------------------------------------------------------------------------
 func (b *Bouncer) update() {
-	b.positionX += b.movementX
-	b.positionY += b.movementY
+	b.xPos += b.movementX
+	b.yPos += b.movementY
 
-	if b.positionX >= float64(SCREEN_WIDTH-2) || b.positionX <= 2 {
+	if b.xPos >= float32(SCREEN_WIDTH-int(b.radius)) || b.xPos <= b.radius {
 		b.movementX *= -1
 	}
-	if b.positionY >= float64(SCREEN_HEIGHT-2) || b.positionY <= 2 {
+	if b.yPos >= float32(SCREEN_HEIGHT-int(b.radius)) || b.yPos <= b.radius {
 		b.movementY *= -1
 	}
+}
+
+// ----------------------------------------------------------------------------
+func (b Bouncer) Draw(screen *ebiten.Image) {
+	healthInPercentage := 360 * (float32(b.health*100/b.maxHealth) / 100)
+	radians := healthInPercentage * (math.Pi / 180)
+	//fmt.Println("For health at ", h.health, "of", h.maxHealth, "we get", healthInPercentage, "radians", radians)
+
+	// first draw shield
+	drawArc(screen, float32(b.xPos), b.yPos, b.radius, 0.0, radians)
+
+	// now draw bouncer
+	vector.DrawFilledCircle(screen, b.xPos, b.yPos, b.radius-1, b.colour, true)
+
 }

@@ -10,6 +10,7 @@ import (
 
 // ----------------------------------------------------------------------------
 type HomeBase struct {
+	side                                   int
 	health, maxHealth                      int
 	ticksTillHealthRegeneration            int
 	bouncersAvailable, ticksTillNewBouncer int
@@ -96,14 +97,14 @@ func (h HomeBase) Draw(screen *ebiten.Image) {
 
 // ----------------------------------------------------------------------------
 func createPlayerHomeBase() HomeBase {
-	playerBase := HomeBase{radius: 30, baseColour: COLOUR_GREEN, antialias: true}
+	playerBase := HomeBase{side: PLAYER_SIDE, radius: 30, baseColour: COLOUR_GREEN, antialias: true}
 	playerBase.init(playerBase.radius+DEFAULT_BASE_OFFSET_BUFFER, float32(SCREEN_HEIGHT)-playerBase.radius-DEFAULT_BASE_OFFSET_BUFFER)
 	return playerBase
 }
 
 // ----------------------------------------------------------------------------
 func createEnemyHomeBase() HomeBase {
-	enemyBase := HomeBase{radius: 30, baseColour: COLOUR_RED, antialias: true}
+	enemyBase := HomeBase{side: ENEMY_SIDE, radius: 30, baseColour: COLOUR_RED, antialias: true}
 	enemyBase.init(float32(SCREEN_WIDTH)-enemyBase.radius-DEFAULT_BASE_OFFSET_BUFFER, enemyBase.radius+DEFAULT_BASE_OFFSET_BUFFER)
 	return enemyBase
 }
