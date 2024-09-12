@@ -2,13 +2,11 @@ package main
 
 import (
 	"fmt"
-	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/hajimehoshi/ebiten/v2/vector"
-	"golang.org/x/exp/rand"
 )
 
 // ----------------------------------------------------------------------------
@@ -22,25 +20,13 @@ type Game struct {
 
 // ----------------------------------------------------------------------------
 func (g *Game) initNewGame() {
-	g.bases = make([]HomeBase, DEFAULT_BASE_COUNT)
+	g.bases = make([]HomeBase, 0)
 
-	playerBase := HomeBase{radius: 30, baseColour: color.RGBA{
-		R: uint8(rand.Intn(255)),
-		G: uint8(rand.Intn(255)),
-		B: uint8(rand.Intn(255)),
-		A: 255,
-	}}
-	playerBase.xPos = playerBase.radius + DEFAULT_BASE_OFFSET_BUFFER
-	playerBase.yPos = float32(SCREEN_HEIGHT) - playerBase.radius - DEFAULT_BASE_OFFSET_BUFFER
+	playerBase := HomeBase{radius: 30, baseColour: COLOUR_GREEN, antialias: true}
+	playerBase.init(playerBase.radius+DEFAULT_BASE_OFFSET_BUFFER, float32(SCREEN_HEIGHT)-playerBase.radius-DEFAULT_BASE_OFFSET_BUFFER)
 
-	enemyBase := HomeBase{radius: 30, baseColour: color.RGBA{
-		R: uint8(rand.Intn(255)),
-		G: uint8(rand.Intn(255)),
-		B: uint8(rand.Intn(255)),
-		A: 255,
-	}}
-	enemyBase.xPos = float32(SCREEN_WIDTH) - enemyBase.radius - DEFAULT_BASE_OFFSET_BUFFER
-	enemyBase.yPos = enemyBase.radius + DEFAULT_BASE_OFFSET_BUFFER
+	enemyBase := HomeBase{radius: 30, baseColour: COLOUR_RED, antialias: true}
+	enemyBase.init(float32(SCREEN_WIDTH)-enemyBase.radius-DEFAULT_BASE_OFFSET_BUFFER, enemyBase.radius+DEFAULT_BASE_OFFSET_BUFFER)
 
 	g.bases = append(g.bases, playerBase, enemyBase)
 }
@@ -85,6 +71,7 @@ func (g *Game) Update() error {
 
 // ----------------------------------------------------------------------------
 func (g *Game) Draw(screen *ebiten.Image) {
+	vector.StrokeRect(screen, 1, 1, float32(SCREEN_WIDTH-1), float32(SCREEN_HEIGHT-1), 0.5, COLOUR_DARK_GRAY, true)
 	str := fmt.Sprintf("We are at roughly %.0f FPS, more or less. (Line: %0.2f) Focus: %t", ebiten.ActualFPS(), g.lineWidth, ebiten.IsFocused())
 	ebitenutil.DebugPrint(screen, str)
 
