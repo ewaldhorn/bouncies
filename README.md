@@ -5,6 +5,9 @@ A simple game written in Go and Ebitengine.
 This project can be used as a reference to get you started with Go game development,
 especially if you are interested in using the fantastic Ebitengine game engine.
 
+IMPORTANT:  This is still very much WIP...  I'll be expanding it over the next
+few weeks, schedule permitting.
+
 ## What
 
 The number one question I've received after some of my talks (list here: <https://nofuss.co.za/about/>)
