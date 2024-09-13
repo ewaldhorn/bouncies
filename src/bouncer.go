@@ -79,9 +79,24 @@ func (b Bouncer) Draw(screen *ebiten.Image) {
 	//fmt.Println("For health at ", h.health, "of", h.maxHealth, "we get", healthInPercentage, "radians", radians)
 
 	// first draw shield
-	drawArc(screen, float32(b.xPos), b.yPos, b.radius, 0.0, radians)
+	drawArc(screen, b.xPos, b.yPos, b.radius, 0.0, radians)
 
 	// now draw bouncer
 	vector.DrawFilledCircle(screen, b.xPos, b.yPos, b.radius-1, b.colour, true)
+}
 
+// ----------------------------------------------------------------------------
+func (b Bouncer) PrepareVSIS() ([]ebiten.Vertex, []uint16) {
+	// healthInPercentage := 360 * (float32(b.health*100/b.maxHealth) / 100)
+	// radians := healthInPercentage * (math.Pi / 180)
+
+	// shield vertices and indices
+	// vs, is := prepareArcVSIS(b.xPos, b.yPos, b.radius, 0.0, radians)
+
+	// now the actual filled circle too
+	ts, ti := prepareCircleVSIS(b.xPos, b.yPos, b.radius, b.colour)
+	// vs = append(vs, ts...)
+	// is = append(is, ti...)
+
+	return ts, ti
 }

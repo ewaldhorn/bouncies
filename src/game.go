@@ -85,13 +85,29 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	str := fmt.Sprintf("We are at roughly %.0f FPS, more or less. Focus: %t, Angle: %.0f X:%0.f Y:%0.f (%d count)", ebiten.ActualFPS(), ebiten.IsFocused(), g.bases[0].attackAngle, g.bases[0].aimPoint.x, g.bases[0].aimPoint.y, len(g.bouncers))
 	ebitenutil.DebugPrint(screen, str)
 
-	for i := 0; i < len(g.bouncers); i++ {
-		g.bouncers[i].Draw(screen)
-	}
+	batchDrawBouncers(screen, g.bouncers)
 
 	for i := 0; i < len(g.bases); i++ {
 		g.bases[i].Draw(screen)
 	}
+}
+
+// ----------------------------------------------------------------------------
+func batchDrawBouncers(screen *ebiten.Image, bouncers []Bouncer) {
+	vs := make([]ebiten.Vertex, 0)
+	is := make([]uint16, 0)
+
+	// collect all the shield vertices
+	for i := 0; i < len(bouncers); i++ {
+		ts, ti := bouncers[i].PrepareVSIS()
+		vs = append(vs, ts...)
+		is = append(is, ti...)
+	}
+
+	// now finally render them
+	op := &ebiten.DrawTrianglesOptions{}
+	op.FillRule = ebiten.NonZero
+	screen.DrawTriangles(vs, is, whiteSubImage, op)
 }
 
 // ----------------------------------------------------------------------------

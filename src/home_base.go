@@ -86,7 +86,6 @@ func (h *HomeBase) TakeDamage(amount int) {
 // ----------------------------------------------------------------------------
 // Renders the HomeBase on to the provided screen
 func (h *HomeBase) Draw(screen *ebiten.Image) {
-
 	var aimX, aimY float32
 
 	// draw attack attackAngle
