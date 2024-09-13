@@ -11,7 +11,7 @@ var FPS int = 60
 
 const (
 	GAME_VERSION      = "0.0.1"
-	IS_DEBUGGING      = true
+	IS_DEBUGGING      = false
 	SCREEN_WIDTH  int = 1024
 	SCREEN_HEIGHT int = 768
 )

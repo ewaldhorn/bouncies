@@ -38,26 +38,38 @@ func (b *Bouncer) init(homeBase HomeBase) {
 			b.movementY = 1
 		}
 	} else {
-		// TODO:  Enemy bouncer movement
+		if b.xPos <= homeBase.xPos {
+			b.movementX = -1
+		} else {
+			b.movementX = 1
+		}
+
+		if b.yPos <= homeBase.yPos {
+			b.movementY = -1
+		} else {
+			b.movementY = 1
+		}
 	}
 
 	// TODO: Clean up magic values
-	b.radius = 8
+	b.radius = 4
 	b.maxHealth = 100
 	b.health = b.maxHealth
 }
 
 // ----------------------------------------------------------------------------
 func (b *Bouncer) update() {
+	var halfrad = b.radius / 2.0
 	b.xPos += b.movementX
 	b.yPos += b.movementY
 
-	if b.xPos >= float32(SCREEN_WIDTH-int(b.radius)) || b.xPos <= b.radius {
+	if b.xPos >= float32(SCREEN_WIDTH-int(halfrad)) || b.xPos <= halfrad {
 		b.movementX *= -1
 	}
-	if b.yPos >= float32(SCREEN_HEIGHT-int(b.radius)) || b.yPos <= b.radius {
+	if b.yPos >= float32(SCREEN_HEIGHT-int(halfrad)) || b.yPos <= halfrad {
 		b.movementY *= -1
 	}
+
 }
 
 // ----------------------------------------------------------------------------

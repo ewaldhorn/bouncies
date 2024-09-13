@@ -13,6 +13,7 @@ type HomeBase struct {
 	side                                   int
 	health, maxHealth                      int
 	ticksTillHealthRegeneration            int
+	ticksTillCanMaybeFire                  int
 	bouncersAvailable, ticksTillNewBouncer int
 	xPos, yPos, radius                     float32
 	aimPoint                               Vector2D
@@ -38,6 +39,7 @@ func (h *HomeBase) init(x, y float32) {
 	h.ticksTillNewBouncer = 1
 	h.ticksTillHealthRegeneration = DEFAULT_TICKS_PER_SHIELD_REGEN
 	h.attackAngle = -36.0
+	h.ticksTillCanMaybeFire = DEFAULT_FIRE_DELAY
 }
 
 // ----------------------------------------------------------------------------
@@ -63,6 +65,11 @@ func (h *HomeBase) Update() {
 		} else {
 			h.health = h.maxHealth
 		}
+	}
+
+	h.ticksTillCanMaybeFire -= 1
+	if h.ticksTillCanMaybeFire <= 0 {
+		h.ticksTillCanMaybeFire = DEFAULT_FIRE_DELAY
 	}
 }
 
