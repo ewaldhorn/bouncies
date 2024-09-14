@@ -87,16 +87,16 @@ func (b Bouncer) Draw(screen *ebiten.Image) {
 
 // ----------------------------------------------------------------------------
 func (b Bouncer) PrepareVSIS() ([]ebiten.Vertex, []uint16) {
-	// healthInPercentage := 360 * (float32(b.health*100/b.maxHealth) / 100)
-	// radians := healthInPercentage * (math.Pi / 180)
+	healthInPercentage := 360 * (float32(b.health*100/b.maxHealth) / 100)
+	radians := healthInPercentage * (math.Pi / 180)
 
 	// shield vertices and indices
-	// vs, is := prepareArcVSIS(b.xPos, b.yPos, b.radius, 0.0, radians)
+	vs, is := prepareArcVSIS(b.xPos, b.yPos, b.radius, 0.0, radians)
 
 	// now the actual filled circle too
 	ts, ti := prepareCircleVSIS(b.xPos, b.yPos, b.radius, b.colour)
-	// vs = append(vs, ts...)
-	// is = append(is, ti...)
+	vs = append(vs, ts...)
+	is = append(is, ti...)
 
-	return ts, ti
+	return vs, is
 }
