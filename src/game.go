@@ -108,6 +108,7 @@ func batchDrawBouncers(screen *ebiten.Image, bouncers []Bouncer) {
 	// now finally render them
 	op := &ebiten.DrawTrianglesOptions{}
 	op.FillRule = ebiten.NonZero
+	op.Blend = ebiten.BlendLighter
 	screen.DrawTriangles(vs, is, whiteSubImage, op)
 }
 
