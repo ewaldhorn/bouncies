@@ -78,10 +78,11 @@ func (g *Game) Update() error {
 			g.bases[pos] = base
 		}
 
-		// check if bouncers have hit anything
+		// check if bouncers have hit any bases
 		for hpos, base := range g.bases {
 			for pos, bouncer := range g.bouncers {
-				if bouncer.xPos >= base.xPos-base.radius && bouncer.xPos <= base.xPos+base.radius && bouncer.yPos >= base.yPos-base.radius && bouncer.yPos <= base.yPos+base.radius {
+				if bouncer.xPos >= base.xPos-base.radius && bouncer.xPos <= base.xPos+base.radius &&
+					bouncer.yPos >= base.yPos-base.radius && bouncer.yPos <= base.yPos+base.radius {
 					if base.side == bouncer.side {
 						g.bases[hpos].AbsorbShield(bouncer.health)
 					} else {
@@ -101,6 +102,23 @@ func (g *Game) Update() error {
 			}
 		}
 		g.bouncers = tmpBouncers
+
+		// now check if any bouncers hit any other bouncers
+		for bpos, bbouncer := range g.bouncers {
+			for i := bpos + 1; i < len(g.bouncers); i++ {
+				var t = g.bouncers[i]
+
+				if bbouncer.xPos >= t.xPos-t.radius && bbouncer.xPos <= t.xPos+t.radius &&
+					bbouncer.yPos >= t.yPos-t.radius && bbouncer.yPos <= t.yPos+t.radius {
+					bbouncer.movementX *= -1.0
+					bbouncer.movementY *= -1.0
+					t.movementX *= -1.0
+					t.movementY *= -1.0
+					g.bouncers[bpos] = bbouncer
+					g.bouncers[i] = t
+				}
+			}
+		}
 	}
 
 	return nil

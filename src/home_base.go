@@ -90,6 +90,10 @@ func (h *HomeBase) AbsorbShield(amount int) {
 	if h.health > DEFAULT_HOMEBASE_HEALTH {
 		h.health = DEFAULT_HOMEBASE_HEALTH
 	}
+
+	if h.bouncersAvailable < DEFAULT_MAX_BOUNCERS {
+		h.bouncersAvailable += 1
+	}
 }
 
 // ----------------------------------------------------------------------------
