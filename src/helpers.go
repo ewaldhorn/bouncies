@@ -26,7 +26,7 @@ func init() {
 
 // ----------------------------------------------------------------------------
 // Draws an arc on the given screen element
-func drawArc(screen *ebiten.Image, xPos, yPos, radius, startAngle, endAngle float32) {
+func drawArc(screen *ebiten.Image, xPos, yPos, radius, width, startAngle, endAngle float32) {
 	var path vector.Path
 
 	path.MoveTo(xPos, yPos)
@@ -36,7 +36,7 @@ func drawArc(screen *ebiten.Image, xPos, yPos, radius, startAngle, endAngle floa
 	var vs []ebiten.Vertex
 	var is []uint16
 	op1 := &vector.StrokeOptions{}
-	op1.Width = 5
+	op1.Width = width
 	op1.LineJoin = vector.LineJoinRound
 	vs, is = path.AppendVerticesAndIndicesForStroke(nil, nil, op1)
 	for i := range vs {

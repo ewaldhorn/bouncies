@@ -106,7 +106,7 @@ func (h *HomeBase) Draw(screen *ebiten.Image) {
 
 	//fmt.Println("For health at ", h.health, "of", h.maxHealth, "we get", healthInPercentage, "radians", radians)
 	// draw shield
-	drawArc(screen, h.xPos, h.yPos, h.radius, 0.0, radians)
+	drawArc(screen, h.xPos, h.yPos, h.radius, 5.0, 0.0, radians)
 
 	// now draw base
 	vector.DrawFilledCircle(screen, h.xPos, h.yPos, h.radius-1, h.baseColour, h.antialias)

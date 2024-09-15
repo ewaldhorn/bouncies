@@ -79,10 +79,10 @@ func (b Bouncer) Draw(screen *ebiten.Image) {
 	//fmt.Println("For health at ", h.health, "of", h.maxHealth, "we get", healthInPercentage, "radians", radians)
 
 	// first draw shield
-	drawArc(screen, b.xPos, b.yPos, b.radius, 0.0, radians)
+	drawArc(screen, b.xPos, b.yPos, b.radius, 3.0, 0.0, radians)
 
 	// now draw bouncer
-	vector.DrawFilledCircle(screen, b.xPos, b.yPos, b.radius-1, b.colour, true)
+	vector.DrawFilledCircle(screen, b.xPos, b.yPos, b.radius, b.colour, true)
 }
 
 // ----------------------------------------------------------------------------

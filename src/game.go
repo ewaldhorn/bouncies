@@ -54,11 +54,14 @@ func (g *Game) Update() error {
 		if g.bases[ENEMY_SIDE].ticksTillCanMaybeFire <= 1 {
 			if rand.Int()%2 == 0 {
 				if g.bases[ENEMY_SIDE].bouncersAvailable > 0 {
-					for count := 0; count < rand.IntN(g.bases[ENEMY_SIDE].bouncersAvailable); count++ {
-						g.bases[ENEMY_SIDE].bouncersAvailable -= 1
-						b := Bouncer{}
-						b.init(g.bases[ENEMY_SIDE])
-						g.bouncers = append(g.bouncers, b)
+					g.bases[ENEMY_SIDE].bouncersAvailable -= 1
+					b := Bouncer{}
+					b.init(g.bases[ENEMY_SIDE])
+					g.bouncers = append(g.bouncers, b)
+
+					if g.bases[ENEMY_SIDE].bouncersAvailable > 2 {
+						// maybe shoot again, because there's some ammo left
+						g.bases[ENEMY_SIDE].ticksTillCanMaybeFire = 12
 					}
 				}
 			}
@@ -86,7 +89,9 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	str := fmt.Sprintf("We are at roughly %.0f FPS, more or less. Focus: %t, Angle: %.0f X:%0.f Y:%0.f (%d count)", ebiten.ActualFPS(), ebiten.IsFocused(), g.bases[0].attackAngle, g.bases[0].aimPoint.x, g.bases[0].aimPoint.y, len(g.bouncers))
 	ebitenutil.DebugPrint(screen, str)
 
-	batchDrawBouncers(screen, g.bouncers)
+	for i := 0; i < len(g.bouncers); i++ {
+		g.bouncers[i].Draw(screen)
+	}
 
 	for i := 0; i < len(g.bases); i++ {
 		g.bases[i].Draw(screen)
