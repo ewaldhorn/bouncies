@@ -81,6 +81,7 @@ func (g *Game) Update() error {
 
 // ----------------------------------------------------------------------------
 func (g *Game) Draw(screen *ebiten.Image) {
+	screen.Fill(COLOUR_DARK_BLUE)
 	vector.StrokeRect(screen, 1, 1, float32(SCREEN_WIDTH-1), float32(SCREEN_HEIGHT-1), 0.5, COLOUR_DARK_GRAY, true)
 	str := fmt.Sprintf("We are at roughly %.0f FPS, more or less. Focus: %t, Angle: %.0f X:%0.f Y:%0.f (%d count)", ebiten.ActualFPS(), ebiten.IsFocused(), g.bases[0].attackAngle, g.bases[0].aimPoint.x, g.bases[0].aimPoint.y, len(g.bouncers))
 	ebitenutil.DebugPrint(screen, str)
