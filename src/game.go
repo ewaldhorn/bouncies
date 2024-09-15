@@ -77,6 +77,30 @@ func (g *Game) Update() error {
 			base.Update()
 			g.bases[pos] = base
 		}
+
+		// check if bouncers have hit anything
+		for hpos, base := range g.bases {
+			for pos, bouncer := range g.bouncers {
+				if bouncer.xPos >= base.xPos-base.radius && bouncer.xPos <= base.xPos+base.radius && bouncer.yPos >= base.yPos-base.radius && bouncer.yPos <= base.yPos+base.radius {
+					if base.side == bouncer.side {
+						g.bases[hpos].AbsorbShield(bouncer.health)
+					} else {
+						g.bases[hpos].TakeDamage(bouncer.health)
+					}
+					g.bouncers[pos].health = 0
+				}
+			}
+		}
+
+		// remove dead bouncers
+		// TODO optimise, append is horribly slow
+		tmpBouncers := make([]Bouncer, 0)
+		for _, bouncer := range g.bouncers {
+			if bouncer.health > 0 {
+				tmpBouncers = append(tmpBouncers, bouncer)
+			}
+		}
+		g.bouncers = tmpBouncers
 	}
 
 	return nil

@@ -84,6 +84,15 @@ func (h *HomeBase) TakeDamage(amount int) {
 }
 
 // ----------------------------------------------------------------------------
+func (h *HomeBase) AbsorbShield(amount int) {
+	h.health += amount
+
+	if h.health > DEFAULT_HOMEBASE_HEALTH {
+		h.health = DEFAULT_HOMEBASE_HEALTH
+	}
+}
+
+// ----------------------------------------------------------------------------
 // Renders the HomeBase on to the provided screen
 func (h *HomeBase) Draw(screen *ebiten.Image) {
 	var aimX, aimY float32
@@ -118,8 +127,12 @@ func (h *HomeBase) Draw(screen *ebiten.Image) {
 
 	// debug section
 	if IS_DEBUGGING {
+		// aim point
 		vector.DrawFilledCircle(screen, h.xPos, h.yPos, 5, COLOUR_BLUE, true)
+		// mid point
 		vector.DrawFilledCircle(screen, aimX, aimY, 5, COLOUR_DARK_RED, true)
+		// bounding box
+		vector.StrokeRect(screen, h.xPos-h.radius, h.yPos-h.radius, h.radius*2, h.radius*2, 2, COLOUR_BLUE, true)
 	}
 }
 
