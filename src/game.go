@@ -52,7 +52,7 @@ func (g *Game) Update() error {
 
 		// maybe the enemy feels like firing a shot or six
 		if g.bases[ENEMY_SIDE].ticksTillCanMaybeFire <= 1 {
-			if rand.Int()%2 == 0 {
+			if rand.Int()%2 == 0 || g.bases[ENEMY_SIDE].bouncersAvailable == DEFAULT_MAX_BOUNCERS {
 				if g.bases[ENEMY_SIDE].bouncersAvailable > 0 {
 					g.bases[ENEMY_SIDE].bouncersAvailable -= 1
 					b := Bouncer{}
