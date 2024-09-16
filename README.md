@@ -8,6 +8,10 @@ especially if you are interested in using the fantastic Ebitengine game engine.
 IMPORTANT:  This is still very much WIP...  I'll be expanding it over the next
 few weeks, schedule permitting.
 
+## Demo
+
+You can see a demo at <https://ewaldhorn.github.io/bouncies/>
+
 ## What
 
 The number one question I've received after some of my talks (list here: <https://nofuss.co.za/about/>)
