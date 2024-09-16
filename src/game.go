@@ -61,7 +61,7 @@ func (g *Game) Update() error {
 
 					if g.bases[ENEMY_SIDE].bouncersAvailable > 2 {
 						// maybe shoot again, because there's some ammo left
-						g.bases[ENEMY_SIDE].ticksTillCanMaybeFire = 12
+						g.bases[ENEMY_SIDE].ticksTillCanMaybeFire = 20
 					}
 				}
 			}
@@ -104,22 +104,44 @@ func (g *Game) Update() error {
 		g.bouncers = tmpBouncers
 
 		// now check if any bouncers hit any other bouncers
-		for bpos, bbouncer := range g.bouncers {
-			for i := 0; i < len(g.bouncers); i++ {
-				var t = g.bouncers[i]
-				if t.id != bbouncer.id {
-					if bbouncer.xPos >= t.xPos-t.radius && bbouncer.xPos <= t.xPos+t.radius &&
-						bbouncer.yPos >= t.yPos-t.radius && bbouncer.yPos <= t.yPos+t.radius {
-						bbouncer.movementX *= -1.0
-						bbouncer.movementY *= -1.0
-						t.movementX *= -1.0
-						t.movementY *= -1.0
-						g.bouncers[bpos] = bbouncer
-						g.bouncers[i] = t
-						fmt.Println("1. Smashed ", t, " with ", bbouncer)
+		for outer := 0; outer < len(g.bouncers); outer++ {
+			var ob = g.bouncers[outer]
+			for inner := 0; inner < len(g.bouncers); inner++ {
+				if g.bouncers[outer].id != g.bouncers[inner].id {
+					// we haven't bounced yet and it's not us
+					var ib = g.bouncers[inner]
+					var diff = g.bouncers[inner].radius * 2
+
+					if ob.xPos >= ib.xPos-diff && ob.xPos <= ib.xPos+diff &&
+						ob.yPos >= ib.yPos-diff && ob.yPos <= ib.yPos+diff {
+						// collided
+						g.bouncers[outer].hasBounced = true
+
+						if ob.side != ib.side {
+							g.bouncers[outer].TakeHit(5)
+							g.bouncers[inner].TakeHit(5)
+						}
+
+						if rand.Int()%2 == 0 {
+							g.bouncers[outer].movementX *= -1
+						}
+						if rand.Int()%2 == 0 {
+							g.bouncers[outer].movementY *= -1
+						}
+						if rand.Int()%2 == 0 {
+							g.bouncers[inner].movementX *= -1
+						}
+						if rand.Int()%2 == 0 {
+							g.bouncers[inner].movementY *= -1
+						}
 					}
 				}
 			}
+		}
+
+		// reset bounced state
+		for i := 0; i < len(g.bouncers); i++ {
+			g.bouncers[i].hasBounced = false
 		}
 	}
 

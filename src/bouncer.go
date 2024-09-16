@@ -14,6 +14,7 @@ var currentId = 0
 type Bouncer struct {
 	side                 int
 	id                   int
+	hasBounced           bool
 	health, maxHealth    int
 	xPos, yPos, radius   float32
 	movementX, movementY float32
@@ -29,6 +30,7 @@ func (b *Bouncer) init(homeBase HomeBase) {
 		currentId = 0
 	}
 
+	b.hasBounced = false
 	b.xPos = homeBase.aimPoint.x
 	b.yPos = homeBase.aimPoint.y
 
@@ -64,6 +66,14 @@ func (b *Bouncer) init(homeBase HomeBase) {
 	b.radius = 4
 	b.maxHealth = 100
 	b.health = b.maxHealth
+}
+
+// ----------------------------------------------------------------------------
+func (b *Bouncer) TakeHit(num int) {
+	b.health -= num
+	if b.health < 0 {
+		b.health = 0
+	}
 }
 
 // ----------------------------------------------------------------------------
