@@ -8,9 +8,12 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
+var currentId = 0
+
 // ----------------------------------------------------------------------------
 type Bouncer struct {
 	side                 int
+	id                   int
 	health, maxHealth    int
 	xPos, yPos, radius   float32
 	movementX, movementY float32
@@ -20,6 +23,12 @@ type Bouncer struct {
 // ----------------------------------------------------------------------------
 func (b *Bouncer) init(homeBase HomeBase) {
 	b.side = homeBase.side
+	b.id = currentId
+	currentId += 1
+	if currentId > 100000000 {
+		currentId = 0
+	}
+
 	b.xPos = homeBase.aimPoint.x
 	b.yPos = homeBase.aimPoint.y
 
@@ -83,6 +92,10 @@ func (b Bouncer) Draw(screen *ebiten.Image) {
 
 	// now draw bouncer
 	vector.DrawFilledCircle(screen, b.xPos, b.yPos, b.radius, b.colour, true)
+
+	if IS_DEBUGGING {
+		vector.StrokeRect(screen, b.xPos-b.radius, b.yPos-b.radius, b.radius*2, b.radius*2, 2, COLOUR_BLUE, true)
+	}
 }
 
 // ----------------------------------------------------------------------------

@@ -84,6 +84,7 @@ func (h *HomeBase) TakeDamage(amount int) {
 }
 
 // ----------------------------------------------------------------------------
+// Allows the HomeBase to absorb returning bouncers
 func (h *HomeBase) AbsorbShield(amount int) {
 	h.health += amount
 

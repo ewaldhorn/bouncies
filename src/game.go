@@ -105,17 +105,19 @@ func (g *Game) Update() error {
 
 		// now check if any bouncers hit any other bouncers
 		for bpos, bbouncer := range g.bouncers {
-			for i := bpos + 1; i < len(g.bouncers); i++ {
+			for i := 0; i < len(g.bouncers); i++ {
 				var t = g.bouncers[i]
-
-				if bbouncer.xPos >= t.xPos-t.radius && bbouncer.xPos <= t.xPos+t.radius &&
-					bbouncer.yPos >= t.yPos-t.radius && bbouncer.yPos <= t.yPos+t.radius {
-					bbouncer.movementX *= -1.0
-					bbouncer.movementY *= -1.0
-					t.movementX *= -1.0
-					t.movementY *= -1.0
-					g.bouncers[bpos] = bbouncer
-					g.bouncers[i] = t
+				if t.id != bbouncer.id {
+					if bbouncer.xPos >= t.xPos-t.radius && bbouncer.xPos <= t.xPos+t.radius &&
+						bbouncer.yPos >= t.yPos-t.radius && bbouncer.yPos <= t.yPos+t.radius {
+						bbouncer.movementX *= -1.0
+						bbouncer.movementY *= -1.0
+						t.movementX *= -1.0
+						t.movementY *= -1.0
+						g.bouncers[bpos] = bbouncer
+						g.bouncers[i] = t
+						fmt.Println("1. Smashed ", t, " with ", bbouncer)
+					}
 				}
 			}
 		}
