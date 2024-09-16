@@ -93,57 +93,55 @@ func (g *Game) Update() error {
 			}
 		}
 
-		// remove dead bouncers
-		// TODO optimise, append is horribly slow
-		tmpBouncers := make([]Bouncer, 0)
-		for _, bouncer := range g.bouncers {
-			if bouncer.health > 0 {
-				tmpBouncers = append(tmpBouncers, bouncer)
-			}
-		}
-		g.bouncers = tmpBouncers
-
 		// now check if any bouncers hit any other bouncers
 		for outer := 0; outer < len(g.bouncers); outer++ {
 			var ob = g.bouncers[outer]
-			for inner := 0; inner < len(g.bouncers); inner++ {
-				if !g.bouncers[outer].hasBounced && g.bouncers[outer].id != g.bouncers[inner].id {
-					var ib = g.bouncers[inner]
-					var diff = g.bouncers[inner].radius * 2
+			if ob.health > 0 {
+				// only bother if the bouncer has health
+				for inner := 0; inner < len(g.bouncers); inner++ {
+					if !g.bouncers[outer].hasBounced && g.bouncers[outer].id != g.bouncers[inner].id && g.bouncers[inner].health > 0 {
+						var ib = g.bouncers[inner]
+						var diff = g.bouncers[inner].radius * 2
 
-					if ob.xPos >= ib.xPos-diff && ob.xPos <= ib.xPos+diff &&
-						ob.yPos >= ib.yPos-diff && ob.yPos <= ib.yPos+diff {
-						// collided
-						g.bouncers[outer].hasBounced = true
+						if ob.xPos >= ib.xPos-diff && ob.xPos <= ib.xPos+diff &&
+							ob.yPos >= ib.yPos-diff && ob.yPos <= ib.yPos+diff {
+							// collided
+							g.bouncers[outer].hasBounced = true
 
-						if ob.side != ib.side {
-							g.bouncers[outer].TakeHit(5)
-							g.bouncers[inner].TakeHit(5)
-						}
+							if ob.side != ib.side {
+								g.bouncers[outer].TakeHit(5)
+								g.bouncers[inner].TakeHit(5)
+							}
 
-						if rand.Int()%2 == 0 {
-							g.bouncers[outer].movementX *= -1
-						}
-						if rand.Int()%2 == 0 {
-							g.bouncers[outer].movementY *= -1
-						}
-						if rand.Int()%2 == 0 {
-							g.bouncers[inner].movementX *= -1
-						}
-						if rand.Int()%2 == 0 {
-							g.bouncers[inner].movementY *= -1
+							if rand.Int()%2 == 0 {
+								g.bouncers[outer].movementX *= -1
+							}
+							if rand.Int()%2 == 0 {
+								g.bouncers[outer].movementY *= -1
+							}
+							if rand.Int()%2 == 0 {
+								g.bouncers[inner].movementX *= -1
+							}
+							if rand.Int()%2 == 0 {
+								g.bouncers[inner].movementY *= -1
+							}
 						}
 					}
 				}
 			}
 		}
 
-		// reset bounced state
-		for i := 0; i < len(g.bouncers); i++ {
-			g.bouncers[i].hasBounced = false
+		// remove dead bouncers
+		// TODO optimise, append is horribly slow
+		tmpBouncers := make([]Bouncer, 0)
+		for _, bouncer := range g.bouncers {
+			if bouncer.health > 0 {
+				bouncer.hasBounced = false
+				tmpBouncers = append(tmpBouncers, bouncer)
+			}
 		}
+		g.bouncers = tmpBouncers
 	}
-
 	return nil
 }
 
