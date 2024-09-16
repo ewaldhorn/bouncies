@@ -107,8 +107,7 @@ func (g *Game) Update() error {
 		for outer := 0; outer < len(g.bouncers); outer++ {
 			var ob = g.bouncers[outer]
 			for inner := 0; inner < len(g.bouncers); inner++ {
-				if g.bouncers[outer].id != g.bouncers[inner].id {
-					// we haven't bounced yet and it's not us
+				if !g.bouncers[outer].hasBounced && g.bouncers[outer].id != g.bouncers[inner].id {
 					var ib = g.bouncers[inner]
 					var diff = g.bouncers[inner].radius * 2
 
