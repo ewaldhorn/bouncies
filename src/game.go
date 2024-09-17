@@ -24,7 +24,7 @@ func (g *Game) initNewGame() {
 
 // ----------------------------------------------------------------------------
 func (g *Game) initBouncers() {
-	g.bouncers = []Bouncer{}
+	g.bouncers = make([]Bouncer, 0, 100)
 }
 
 // ----------------------------------------------------------------------------
@@ -133,7 +133,7 @@ func (g *Game) Update() error {
 
 		// remove dead bouncers
 		// TODO optimise, append is horribly slow
-		tmpBouncers := make([]Bouncer, 0)
+		tmpBouncers := make([]Bouncer, 0, 100)
 		for _, bouncer := range g.bouncers {
 			if bouncer.health > 0 {
 				bouncer.hasBounced = false
@@ -149,7 +149,7 @@ func (g *Game) Update() error {
 func (g *Game) Draw(screen *ebiten.Image) {
 	screen.Fill(COLOUR_DARK_BLUE)
 	vector.StrokeRect(screen, 1, 1, float32(SCREEN_WIDTH-1), float32(SCREEN_HEIGHT-1), 0.5, COLOUR_DARK_GRAY, true)
-	str := fmt.Sprintf("We are at roughly %.0f FPS, more or less. Focus: %t, Angle: %.0f X:%0.f Y:%0.f (%d count)", ebiten.ActualFPS(), ebiten.IsFocused(), g.bases[0].attackAngle, g.bases[0].aimPoint.x, g.bases[0].aimPoint.y, len(g.bouncers))
+	str := fmt.Sprintf("(v%s) We are at roughly %.0f FPS, more or less. Focus: %t, Angle: %.0f X:%0.f Y:%0.f (%d count)", GAME_VERSION, ebiten.ActualFPS(), ebiten.IsFocused(), g.bases[0].attackAngle, g.bases[0].aimPoint.x, g.bases[0].aimPoint.y, len(g.bouncers))
 	ebitenutil.DebugPrint(screen, str)
 
 	for i := 0; i < len(g.bouncers); i++ {
@@ -163,8 +163,8 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 // ----------------------------------------------------------------------------
 func batchDrawBouncers(screen *ebiten.Image, bouncers []Bouncer) {
-	vs := make([]ebiten.Vertex, 0)
-	is := make([]uint16, 0)
+	vs := make([]ebiten.Vertex, 0, 100)
+	is := make([]uint16, 0, 100)
 
 	// collect all the shield vertices
 	for i := 0; i < len(bouncers); i++ {
