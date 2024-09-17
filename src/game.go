@@ -6,7 +6,6 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
-	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
@@ -14,8 +13,9 @@ import (
 type Game struct {
 	bases       []HomeBase
 	bouncers    []Bouncer
-	pressedKeys []ebiten.Key
 	ebitenImage *ebiten.Image
+	action      int
+	canShoot    int
 }
 
 // ----------------------------------------------------------------------------
@@ -33,17 +33,23 @@ func (g *Game) initBouncers() {
 func (g *Game) Update() error {
 	if ebiten.IsFocused() {
 		// handle user interaction
-		g.pressedKeys = inpututil.AppendJustPressedKeys(g.pressedKeys[:0])
-
-		for _, key := range g.pressedKeys {
-			switch key.String() {
-			case "ArrowUp":
+		if g.action <= 0 {
+			g.action = 6
+			if ebiten.IsKeyPressed(ebiten.KeyArrowUp) {
 				g.bases[0].AdjustAttackAngle(-2.0)
 				g.bases[1].AdjustAttackAngle(-2.0)
-			case "ArrowDown":
+			}
+
+			if ebiten.IsKeyPressed(ebiten.KeyArrowDown) {
 				g.bases[0].AdjustAttackAngle(2.0)
 				g.bases[1].AdjustAttackAngle(2.0)
-			case "Space":
+			}
+
+		}
+
+		if g.canShoot <= 0 {
+			g.canShoot = 10
+			if ebiten.IsKeyPressed(ebiten.KeySpace) {
 				if g.bases[PLAYER_SIDE].bouncersAvailable > 0 {
 					g.bases[PLAYER_SIDE].bouncersAvailable -= 1
 					b := Bouncer{}
@@ -52,6 +58,8 @@ func (g *Game) Update() error {
 				}
 			}
 		}
+		g.action -= 1
+		g.canShoot -= 1
 
 		// maybe the enemy feels like firing a shot or six
 		if g.bases[ENEMY_SIDE].ticksTillCanMaybeFire <= 1 {
@@ -120,8 +128,8 @@ func (g *Game) Update() error {
 								g.bouncers[inner].movementX *= 1.1
 								g.bouncers[inner].movementY *= 1.1
 
-								g.bouncers[outer].TakeHit(-25)
-								g.bouncers[inner].TakeHit(-25)
+								g.bouncers[outer].TakeHit(-10)
+								g.bouncers[inner].TakeHit(-10)
 							}
 
 							if rand.Int()%2 == 0 {
