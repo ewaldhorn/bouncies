@@ -80,6 +80,8 @@ func (b *Bouncer) TakeHit(num int) {
 	b.health -= num
 	if b.health < 0 {
 		b.health = 0
+	} else if b.health > b.maxHealth {
+		b.health = b.maxHealth
 	}
 }
 
@@ -102,6 +104,22 @@ func (b *Bouncer) update() {
 
 	if math.Abs(float64(b.movementX)) <= 0.1 && math.Abs(float64(b.movementY)) <= 0.1 {
 		b.TakeHit(2)
+	}
+
+	if b.movementX > 3.0 {
+		b.movementX = 3.0
+	}
+
+	if b.movementX < -3.0 {
+		b.movementX = -3.0
+	}
+
+	if b.movementY > 3.0 {
+		b.movementY = 3.0
+	}
+
+	if b.movementY < -3.0 {
+		b.movementY = -3.0
 	}
 
 }

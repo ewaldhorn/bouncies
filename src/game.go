@@ -114,6 +114,14 @@ func (g *Game) Update() error {
 							if ob.side != ib.side {
 								g.bouncers[outer].TakeHit(5)
 								g.bouncers[inner].TakeHit(5)
+							} else {
+								g.bouncers[outer].movementX *= 1.1
+								g.bouncers[outer].movementY *= 1.1
+								g.bouncers[inner].movementX *= 1.1
+								g.bouncers[inner].movementY *= 1.1
+
+								g.bouncers[outer].TakeHit(-25)
+								g.bouncers[inner].TakeHit(-25)
 							}
 
 							if rand.Int()%2 == 0 {
