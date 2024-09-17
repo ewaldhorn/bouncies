@@ -1,8 +1,8 @@
 # Bouncies
 
-A simple game written in Go and Ebitengine.
+A simple game experiment written in Go and Ebitengine.
 
-This project can be used as a reference to get you started with Go game development,
+This project can possibly be used as a reference to get you started with Go game development,
 especially if you are interested in using the fantastic Ebitengine game engine.
 
 IMPORTANT:  This is still very much WIP...  I'll be expanding it over the next
