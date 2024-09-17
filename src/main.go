@@ -7,10 +7,10 @@ import (
 )
 
 // ----------------------------------------------------------------------------
-var FPS int = 60
+var FPS int = 50
 
 const (
-	GAME_VERSION      = "0.0.2"
+	GAME_VERSION      = "0.0.3"
 	IS_DEBUGGING      = false
 	SCREEN_WIDTH  int = 1024
 	SCREEN_HEIGHT int = 768

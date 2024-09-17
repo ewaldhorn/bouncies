@@ -48,6 +48,13 @@ func (b *Bouncer) init(homeBase HomeBase) {
 		} else {
 			b.movementY = 1
 		}
+
+		if homeBase.attackAngle == 0 {
+			b.movementY = 0
+		}
+		if homeBase.attackAngle == -90 {
+			b.movementX = 0
+		}
 	} else {
 		if b.xPos <= homeBase.xPos {
 			b.movementX = -1
@@ -77,6 +84,7 @@ func (b *Bouncer) TakeHit(num int) {
 }
 
 // ----------------------------------------------------------------------------
+// Bouncers gain energy from bouncing of the sides
 func (b *Bouncer) update() {
 	var halfrad = b.radius / 2.0
 	b.xPos += b.movementX
@@ -84,9 +92,16 @@ func (b *Bouncer) update() {
 
 	if b.xPos >= float32(SCREEN_WIDTH-int(halfrad)) || b.xPos <= halfrad {
 		b.movementX *= -1
+		b.movementX *= 1.2
 	}
+
 	if b.yPos >= float32(SCREEN_HEIGHT-int(halfrad)) || b.yPos <= halfrad {
 		b.movementY *= -1
+		b.movementY *= 1.2
+	}
+
+	if math.Abs(float64(b.movementX)) <= 0.1 && math.Abs(float64(b.movementY)) <= 0.1 {
+		b.TakeHit(2)
 	}
 
 }

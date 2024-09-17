@@ -15,11 +15,13 @@ type Game struct {
 	bases       []HomeBase
 	bouncers    []Bouncer
 	pressedKeys []ebiten.Key
+	ebitenImage *ebiten.Image
 }
 
 // ----------------------------------------------------------------------------
 func (g *Game) initNewGame() {
 	g.bases = []HomeBase{createPlayerHomeBase(), createEnemyHomeBase()}
+	g.ebitenImage = ebiten.NewImage(SCREEN_WIDTH, SCREEN_HEIGHT)
 }
 
 // ----------------------------------------------------------------------------
@@ -32,14 +34,15 @@ func (g *Game) Update() error {
 	if ebiten.IsFocused() {
 		// handle user interaction
 		g.pressedKeys = inpututil.AppendJustPressedKeys(g.pressedKeys[:0])
+
 		for _, key := range g.pressedKeys {
 			switch key.String() {
 			case "ArrowUp":
-				g.bases[0].AdjustAttackAngle(-4.0)
-				g.bases[1].AdjustAttackAngle(-4.0)
+				g.bases[0].AdjustAttackAngle(-2.0)
+				g.bases[1].AdjustAttackAngle(-2.0)
 			case "ArrowDown":
-				g.bases[0].AdjustAttackAngle(4.0)
-				g.bases[1].AdjustAttackAngle(4.0)
+				g.bases[0].AdjustAttackAngle(2.0)
+				g.bases[1].AdjustAttackAngle(2.0)
 			case "Space":
 				if g.bases[PLAYER_SIDE].bouncersAvailable > 0 {
 					g.bases[PLAYER_SIDE].bouncersAvailable -= 1
@@ -114,15 +117,38 @@ func (g *Game) Update() error {
 							}
 
 							if rand.Int()%2 == 0 {
+								if g.bouncers[outer].movementX > 0 {
+									g.bouncers[outer].movementX -= 0.1
+								} else {
+									g.bouncers[outer].movementX += 0.1
+								}
 								g.bouncers[outer].movementX *= -1
 							}
+
 							if rand.Int()%2 == 0 {
+								if g.bouncers[outer].movementY > 0 {
+									g.bouncers[outer].movementY -= 0.1
+								} else {
+									g.bouncers[outer].movementY += 0.1
+								}
 								g.bouncers[outer].movementY *= -1
 							}
+
 							if rand.Int()%2 == 0 {
+								if g.bouncers[inner].movementX > 0 {
+									g.bouncers[inner].movementX -= 0.1
+								} else {
+									g.bouncers[inner].movementX += 0.1
+								}
 								g.bouncers[inner].movementX *= -1
 							}
+
 							if rand.Int()%2 == 0 {
+								if g.bouncers[inner].movementY > 0 {
+									g.bouncers[inner].movementY -= 0.1
+								} else {
+									g.bouncers[inner].movementY += 0.1
+								}
 								g.bouncers[inner].movementY *= -1
 							}
 						}
@@ -147,18 +173,22 @@ func (g *Game) Update() error {
 
 // ----------------------------------------------------------------------------
 func (g *Game) Draw(screen *ebiten.Image) {
-	screen.Fill(COLOUR_DARK_BLUE)
-	vector.StrokeRect(screen, 1, 1, float32(SCREEN_WIDTH-1), float32(SCREEN_HEIGHT-1), 0.5, COLOUR_DARK_GRAY, true)
+
+	g.ebitenImage.Fill(COLOUR_DARK_BLUE)
+	vector.StrokeRect(g.ebitenImage, 1, 1, float32(SCREEN_WIDTH-1), float32(SCREEN_HEIGHT-1), 0.5, COLOUR_DARK_GRAY, true)
 	str := fmt.Sprintf("(v%s) We are at roughly %.0f FPS, more or less. Focus: %t, Angle: %.0f X:%0.f Y:%0.f (%d count)", GAME_VERSION, ebiten.ActualFPS(), ebiten.IsFocused(), g.bases[0].attackAngle, g.bases[0].aimPoint.x, g.bases[0].aimPoint.y, len(g.bouncers))
-	ebitenutil.DebugPrint(screen, str)
+	ebitenutil.DebugPrint(g.ebitenImage, str)
 
 	for i := 0; i < len(g.bouncers); i++ {
-		g.bouncers[i].Draw(screen)
+		g.bouncers[i].Draw(g.ebitenImage)
 	}
 
 	for i := 0; i < len(g.bases); i++ {
-		g.bases[i].Draw(screen)
+		g.bases[i].Draw(g.ebitenImage)
 	}
+
+	var ops = &ebiten.DrawImageOptions{}
+	screen.DrawImage(g.ebitenImage, ops)
 }
 
 // ----------------------------------------------------------------------------
