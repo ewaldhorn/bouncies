@@ -54,6 +54,29 @@ func drawArc(screen *ebiten.Image, xPos, yPos, radius, width, startAngle, endAng
 }
 
 // ----------------------------------------------------------------------------
+// Improved arc
+func drawFilledArc(screen *ebiten.Image, xPos, yPos, radius, startAngle, endAngle float32, clr color.Color) {
+	var path vector.Path
+	path.Arc(xPos, yPos, radius, startAngle, endAngle, vector.Clockwise)
+	vs, is := path.AppendVerticesAndIndicesForFilling(nil, nil)
+
+	r, g, b, a := clr.RGBA()
+	for i := range vs {
+		vs[i].SrcX = 1
+		vs[i].SrcY = 1
+		vs[i].ColorR = float32(r) / 0xffff
+		vs[i].ColorG = float32(g) / 0xffff
+		vs[i].ColorB = float32(b) / 0xffff
+		vs[i].ColorA = float32(a) / 0xffff
+	}
+
+	op := &ebiten.DrawTrianglesOptions{}
+	op.ColorScaleMode = ebiten.ColorScaleModePremultipliedAlpha
+	op.AntiAlias = true
+	screen.DrawTriangles(vs, is, whiteSubImage, op)
+}
+
+// ----------------------------------------------------------------------------
 // Creates all the vertices and indices required to draw an arc
 func prepareArcVSIS(xPos, yPos, radius, startAngle, endAngle float32) ([]ebiten.Vertex, []uint16) {
 	var path vector.Path

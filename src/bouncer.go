@@ -131,7 +131,8 @@ func (b *Bouncer) update() {
 // ----------------------------------------------------------------------------
 func (b Bouncer) Draw(screen *ebiten.Image) {
 	// first draw shield
-	drawArc(screen, b.xPos, b.yPos, b.radius, 3.0, 0.0, b.shieldRadians)
+	// drawArc(screen, b.xPos, b.yPos, b.radius, 3.0, 0.0, b.shieldRadians)
+	drawFilledArc(screen, b.xPos, b.yPos, b.radius+2, 0.0, b.shieldRadians, color.White)
 
 	// now draw bouncer
 	vector.DrawFilledCircle(screen, b.xPos, b.yPos, b.radius, b.colour, true)

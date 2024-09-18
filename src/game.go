@@ -15,7 +15,6 @@ type Game struct {
 	bouncers    []Bouncer
 	ebitenImage *ebiten.Image
 	action      int
-	canShoot    int
 }
 
 // ----------------------------------------------------------------------------
@@ -45,10 +44,6 @@ func (g *Game) Update() error {
 				g.bases[1].AdjustAttackAngle(2.0)
 			}
 
-		}
-
-		if g.canShoot <= 0 {
-			g.canShoot = 8
 			if ebiten.IsKeyPressed(ebiten.KeySpace) {
 				if g.bases[PLAYER_SIDE].bouncersAvailable > 0 {
 					g.bases[PLAYER_SIDE].bouncersAvailable -= 1
@@ -59,7 +54,6 @@ func (g *Game) Update() error {
 			}
 		}
 		g.action -= 1
-		g.canShoot -= 1
 
 		// maybe the enemy feels like firing a shot or six
 		if g.bases[ENEMY_SIDE].ticksTillCanMaybeFire <= 1 {
