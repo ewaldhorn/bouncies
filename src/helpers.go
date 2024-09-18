@@ -54,7 +54,7 @@ func drawArc(screen *ebiten.Image, xPos, yPos, radius, width, startAngle, endAng
 }
 
 // ----------------------------------------------------------------------------
-// Improved arc
+// Draws a filled arc
 func drawFilledArc(screen *ebiten.Image, xPos, yPos, radius, startAngle, endAngle float32, clr color.Color) {
 	var path vector.Path
 	path.Arc(xPos, yPos, radius, startAngle, endAngle, vector.Clockwise)
