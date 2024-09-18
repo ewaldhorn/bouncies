@@ -33,7 +33,7 @@ func (g *Game) Update() error {
 	if ebiten.IsFocused() {
 		// handle user interaction
 		if g.action <= 0 {
-			g.action = 4
+			g.action = 3
 			if ebiten.IsKeyPressed(ebiten.KeyArrowUp) {
 				g.bases[0].AdjustAttackAngle(-2.0)
 				g.bases[1].AdjustAttackAngle(-2.0)
@@ -186,7 +186,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 	g.ebitenImage.Fill(COLOUR_DARK_BLUE)
 	vector.StrokeRect(g.ebitenImage, 1, 1, float32(SCREEN_WIDTH-1), float32(SCREEN_HEIGHT-1), 0.5, COLOUR_DARK_GRAY, true)
-	str := fmt.Sprintf("(v%s) We are at roughly %.0f FPS, more or less. Focus: %t, Angle: %.0f X:%0.f Y:%0.f (%d count)", GAME_VERSION, ebiten.ActualFPS(), ebiten.IsFocused(), g.bases[0].attackAngle, g.bases[0].aimPoint.x, g.bases[0].aimPoint.y, len(g.bouncers))
+	str := fmt.Sprintf("(v%s) %.0f FPS vs %.0f TPS. Focus: %t, Angle: %.0f X:%0.f Y:%0.f (%d count)", GAME_VERSION, ebiten.ActualFPS(), ebiten.ActualTPS(), ebiten.IsFocused(), g.bases[0].attackAngle, g.bases[0].aimPoint.x, g.bases[0].aimPoint.y, len(g.bouncers))
 	ebitenutil.DebugPrint(g.ebitenImage, str)
 
 	for i := 0; i < len(g.bouncers); i++ {
