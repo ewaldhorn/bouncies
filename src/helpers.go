@@ -33,8 +33,8 @@ func drawArc(screen *ebiten.Image, xPos, yPos, radius, width, startAngle, endAng
 	path.Arc(xPos, yPos, radius, startAngle, endAngle, vector.Clockwise)
 	path.Close()
 
-	var vs []ebiten.Vertex
-	var is []uint16
+	var vs = make([]ebiten.Vertex, 0, 250)
+	var is = make([]uint16, 0, 500)
 	op1 := &vector.StrokeOptions{}
 	op1.Width = width
 	op1.LineJoin = vector.LineJoinRound

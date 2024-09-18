@@ -18,6 +18,7 @@ type Bouncer struct {
 	health, maxHealth    int
 	xPos, yPos, radius   float32
 	movementX, movementY float32
+	shieldRadians        float32
 	colour               color.RGBA
 }
 
@@ -122,16 +123,15 @@ func (b *Bouncer) update() {
 		b.movementY = -3.0
 	}
 
+	healthInPercentage := 360 * (float32(b.health*100/b.maxHealth) / 100)
+	b.shieldRadians = healthInPercentage * RADIAN
+
 }
 
 // ----------------------------------------------------------------------------
 func (b Bouncer) Draw(screen *ebiten.Image) {
-	healthInPercentage := 360 * (float32(b.health*100/b.maxHealth) / 100)
-	radians := healthInPercentage * (math.Pi / 180)
-	//fmt.Println("For health at ", h.health, "of", h.maxHealth, "we get", healthInPercentage, "radians", radians)
-
 	// first draw shield
-	drawArc(screen, b.xPos, b.yPos, b.radius, 3.0, 0.0, radians)
+	drawArc(screen, b.xPos, b.yPos, b.radius, 3.0, 0.0, b.shieldRadians)
 
 	// now draw bouncer
 	vector.DrawFilledCircle(screen, b.xPos, b.yPos, b.radius, b.colour, true)

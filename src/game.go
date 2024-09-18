@@ -48,7 +48,7 @@ func (g *Game) Update() error {
 		}
 
 		if g.canShoot <= 0 {
-			g.canShoot = 10
+			g.canShoot = 8
 			if ebiten.IsKeyPressed(ebiten.KeySpace) {
 				if g.bases[PLAYER_SIDE].bouncersAvailable > 0 {
 					g.bases[PLAYER_SIDE].bouncersAvailable -= 1
