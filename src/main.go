@@ -7,7 +7,7 @@ import (
 )
 
 // ----------------------------------------------------------------------------
-var FPS int = 50
+var TPS int = 30
 
 const (
 	GAME_VERSION      = "0.0.3a"
@@ -20,7 +20,7 @@ const (
 func main() {
 	ebiten.SetWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT)
 	ebiten.SetWindowTitle("Bouncies " + GAME_VERSION)
-	ebiten.SetTPS(FPS)
+	ebiten.SetTPS(TPS)
 
 	game := Game{}
 	game.initNewGame()

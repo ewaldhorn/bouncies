@@ -33,7 +33,7 @@ func (g *Game) Update() error {
 	if ebiten.IsFocused() {
 		// handle user interaction
 		if g.action <= 0 {
-			g.action = 6
+			g.action = 4
 			if ebiten.IsKeyPressed(ebiten.KeyArrowUp) {
 				g.bases[0].AdjustAttackAngle(-2.0)
 				g.bases[1].AdjustAttackAngle(-2.0)
