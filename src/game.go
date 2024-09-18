@@ -32,14 +32,37 @@ func (g *Game) initBouncers() {
 func (g *Game) Update() error {
 	if ebiten.IsFocused() {
 		// handle user interaction
+		dx, _ := ebiten.Wheel()
+
+		if dx < 0 {
+			g.bases[0].AdjustAttackAngle(-2.0)
+			g.action = 3
+		}
+
+		if dx > 0 {
+			g.bases[0].AdjustAttackAngle(2.0)
+			g.action = 3
+		}
+
+		if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
+			if g.bases[PLAYER_SIDE].bouncersAvailable > 0 {
+				g.bases[PLAYER_SIDE].bouncersAvailable -= 1
+				b := Bouncer{}
+				b.Init(g.bases[PLAYER_SIDE])
+				g.bouncers = append(g.bouncers, b)
+			}
+			g.action = 3
+		}
+
 		if g.action <= 0 {
 			g.action = 3
-			if ebiten.IsKeyPressed(ebiten.KeyArrowUp) {
+
+			if ebiten.IsKeyPressed(ebiten.KeyArrowUp) || dx < 0 {
 				g.bases[0].AdjustAttackAngle(-2.0)
 				g.bases[1].AdjustAttackAngle(-2.0)
 			}
 
-			if ebiten.IsKeyPressed(ebiten.KeyArrowDown) {
+			if ebiten.IsKeyPressed(ebiten.KeyArrowDown) || dx > 0 {
 				g.bases[0].AdjustAttackAngle(2.0)
 				g.bases[1].AdjustAttackAngle(2.0)
 			}
@@ -52,6 +75,7 @@ func (g *Game) Update() error {
 					g.bouncers = append(g.bouncers, b)
 				}
 			}
+
 		}
 		g.action -= 1
 
