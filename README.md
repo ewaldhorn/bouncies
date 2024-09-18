@@ -12,6 +12,8 @@ few weeks, schedule permitting.
 
 You can see a demo at <https://ewaldhorn.github.io/bouncies/>
 
+![Screen Shot](./screenshot.png "Screenshot")
+
 ## What
 
 The number one question I've received after some of my talks (list here: <https://nofuss.co.za/about/>)
