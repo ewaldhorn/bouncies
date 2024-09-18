@@ -10,7 +10,7 @@ import (
 var FPS int = 50
 
 const (
-	GAME_VERSION      = "0.0.3"
+	GAME_VERSION      = "0.0.3a"
 	IS_DEBUGGING      = false
 	SCREEN_WIDTH  int = 1024
 	SCREEN_HEIGHT int = 768
