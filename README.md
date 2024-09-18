@@ -6,7 +6,8 @@ This project can possibly be used as a reference to get you started with Go game
 especially if you are interested in using the fantastic Ebitengine game engine.
 
 IMPORTANT:  This is still very much WIP...  I'll be expanding it over the next
-few weeks, schedule permitting.
+few weeks, schedule permitting. This is probably going to form the basis of one of my talks
+in the future...
 
 ## Demo
 
