@@ -23,7 +23,7 @@ type Bouncer struct {
 }
 
 // ----------------------------------------------------------------------------
-func (b *Bouncer) init(homeBase HomeBase) {
+func (b *Bouncer) Init(homeBase HomeBase) {
 	b.side = homeBase.side
 	b.id = currentId
 	currentId += 1
@@ -74,6 +74,9 @@ func (b *Bouncer) init(homeBase HomeBase) {
 	b.radius = 4
 	b.maxHealth = 100
 	b.health = b.maxHealth
+
+	// need to set the shield data now
+	b.updateShield()
 }
 
 // ----------------------------------------------------------------------------
@@ -84,11 +87,19 @@ func (b *Bouncer) TakeHit(num int) {
 	} else if b.health > b.maxHealth {
 		b.health = b.maxHealth
 	}
+
+	b.updateShield()
+}
+
+// ----------------------------------------------------------------------------
+func (b *Bouncer) updateShield() {
+	healthInPercentage := 360 * (float32(b.health*100/b.maxHealth) / 100)
+	b.shieldRadians = healthInPercentage * RADIAN
 }
 
 // ----------------------------------------------------------------------------
 // Bouncers gain energy from bouncing of the sides
-func (b *Bouncer) update() {
+func (b *Bouncer) Update() {
 	var halfrad = b.radius / 2.0
 	b.xPos += b.movementX
 	b.yPos += b.movementY
@@ -122,10 +133,6 @@ func (b *Bouncer) update() {
 	if b.movementY < -3.0 {
 		b.movementY = -3.0
 	}
-
-	healthInPercentage := 360 * (float32(b.health*100/b.maxHealth) / 100)
-	b.shieldRadians = healthInPercentage * RADIAN
-
 }
 
 // ----------------------------------------------------------------------------

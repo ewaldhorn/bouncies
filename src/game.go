@@ -48,7 +48,7 @@ func (g *Game) Update() error {
 				if g.bases[PLAYER_SIDE].bouncersAvailable > 0 {
 					g.bases[PLAYER_SIDE].bouncersAvailable -= 1
 					b := Bouncer{}
-					b.init(g.bases[PLAYER_SIDE])
+					b.Init(g.bases[PLAYER_SIDE])
 					g.bouncers = append(g.bouncers, b)
 				}
 			}
@@ -61,7 +61,7 @@ func (g *Game) Update() error {
 				if g.bases[ENEMY_SIDE].bouncersAvailable > 0 {
 					g.bases[ENEMY_SIDE].bouncersAvailable -= 1
 					b := Bouncer{}
-					b.init(g.bases[ENEMY_SIDE])
+					b.Init(g.bases[ENEMY_SIDE])
 					g.bouncers = append(g.bouncers, b)
 
 					if g.bases[ENEMY_SIDE].bouncersAvailable > 2 {
@@ -74,7 +74,7 @@ func (g *Game) Update() error {
 
 		// now for game object updates
 		for pos, bouncer := range g.bouncers {
-			bouncer.update()
+			bouncer.Update()
 			g.bouncers[pos] = bouncer
 		}
 
