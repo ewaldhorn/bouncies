@@ -38,24 +38,20 @@ func (b *Bouncer) Init(homeBase HomeBase) {
 	b.colour = homeBase.baseColour
 
 	if b.side == PLAYER_SIDE {
-		if b.xPos <= homeBase.xPos {
+		if homeBase.attackAngle <= -90 {
 			b.movementX = -1
 		} else {
 			b.movementX = 1
 		}
 
-		if b.yPos <= homeBase.yPos {
-			b.movementY = -1
-		} else {
-			b.movementY = 1
-		}
-
 		if homeBase.attackAngle == 0 {
 			b.movementY = 0
+		} else if homeBase.attackAngle > 0 {
+			b.movementY = 1
+		} else {
+			b.movementY = -1
 		}
-		if homeBase.attackAngle == -90 {
-			b.movementX = 0
-		}
+
 	} else {
 		if b.xPos <= homeBase.xPos {
 			b.movementX = -1
@@ -105,13 +101,11 @@ func (b *Bouncer) Update() {
 	b.yPos += b.movementY
 
 	if b.xPos >= float32(SCREEN_WIDTH-int(halfrad)) || b.xPos <= halfrad {
-		b.movementX *= -1
-		b.movementX *= 1.2
+		b.movementX *= -1.2
 	}
 
 	if b.yPos >= float32(SCREEN_HEIGHT-int(halfrad)) || b.yPos <= halfrad {
-		b.movementY *= -1
-		b.movementY *= 1.2
+		b.movementY *= -1.2
 	}
 
 	if math.Abs(float64(b.movementX)) <= 0.1 && math.Abs(float64(b.movementY)) <= 0.1 {
