@@ -10,7 +10,7 @@ import (
 var TPS int = 30
 
 const (
-	GAME_VERSION      = "0.0.3d"
+	GAME_VERSION      = "0.0.3e"
 	IS_DEBUGGING      = false
 	SCREEN_WIDTH  int = 1024
 	SCREEN_HEIGHT int = 768
