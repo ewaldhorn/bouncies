@@ -118,20 +118,20 @@ func (b *Bouncer) Update() {
 		b.TakeHit(2)
 	}
 
-	if b.movementX > 3.0 {
-		b.movementX = 3.0
+	if b.movementX > 4.0 {
+		b.movementX = 4.0
 	}
 
-	if b.movementX < -3.0 {
-		b.movementX = -3.0
+	if b.movementX < -4.0 {
+		b.movementX = -4.0
 	}
 
-	if b.movementY > 3.0 {
-		b.movementY = 3.0
+	if b.movementY > 4.0 {
+		b.movementY = 4.0
 	}
 
-	if b.movementY < -3.0 {
-		b.movementY = -3.0
+	if b.movementY < -4.0 {
+		b.movementY = -4.0
 	}
 }
 
@@ -147,20 +147,4 @@ func (b Bouncer) Draw(screen *ebiten.Image) {
 	if IS_DEBUGGING {
 		vector.StrokeRect(screen, b.xPos-b.radius, b.yPos-b.radius, b.radius*2, b.radius*2, 2, COLOUR_BLUE, true)
 	}
-}
-
-// ----------------------------------------------------------------------------
-func (b Bouncer) PrepareVSIS() ([]ebiten.Vertex, []uint16) {
-	healthInPercentage := 360 * (float32(b.health*100/b.maxHealth) / 100)
-	radians := healthInPercentage * (math.Pi / 180)
-
-	// shield vertices and indices
-	vs, is := prepareArcVSIS(b.xPos, b.yPos, b.radius, 0.0, radians)
-
-	// now the actual filled circle too
-	ts, ti := prepareCircleVSIS(b.xPos, b.yPos, b.radius, b.colour)
-	vs = append(vs, ts...)
-	is = append(is, ti...)
-
-	return vs, is
 }

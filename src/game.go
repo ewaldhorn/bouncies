@@ -15,6 +15,7 @@ type Game struct {
 	bouncers    []Bouncer
 	ebitenImage *ebiten.Image
 	action      int
+	isOver      bool
 }
 
 // ----------------------------------------------------------------------------
@@ -30,7 +31,7 @@ func (g *Game) initBouncers() {
 
 // ----------------------------------------------------------------------------
 func (g *Game) Update() error {
-	if ebiten.IsFocused() {
+	if ebiten.IsFocused() && !g.isOver {
 		// handle user interaction
 		dx, _ := ebiten.Wheel()
 
@@ -138,16 +139,16 @@ func (g *Game) Update() error {
 							g.bouncers[outer].hasBounced = true
 
 							if ob.side != ib.side {
-								g.bouncers[outer].TakeHit(5)
-								g.bouncers[inner].TakeHit(5)
+								g.bouncers[outer].TakeHit(15)
+								g.bouncers[inner].TakeHit(15)
 							} else {
 								g.bouncers[outer].movementX *= 1.1
 								g.bouncers[outer].movementY *= 1.1
 								g.bouncers[inner].movementX *= 1.1
 								g.bouncers[inner].movementY *= 1.1
 
-								g.bouncers[outer].TakeHit(-10)
-								g.bouncers[inner].TakeHit(-10)
+								g.bouncers[outer].TakeHit(-5)
+								g.bouncers[inner].TakeHit(-5)
 							}
 
 							if rand.Int()%2 == 0 {
@@ -195,12 +196,22 @@ func (g *Game) Update() error {
 		// TODO optimise, append is horribly slow
 		tmpBouncers := make([]Bouncer, 0, 100)
 		for _, bouncer := range g.bouncers {
-			if bouncer.health > 0 {
+			if bouncer.health > 10 {
 				bouncer.hasBounced = false
 				tmpBouncers = append(tmpBouncers, bouncer)
 			}
 		}
 		g.bouncers = tmpBouncers
+
+		if g.bases[PLAYER_SIDE].health <= 5 {
+			fmt.Printf("Player health at %d\n", g.bases[PLAYER_SIDE].health)
+			g.isOver = true
+		}
+
+		if g.bases[ENEMY_SIDE].health <= 5 {
+			fmt.Printf("Enemy health at %d\n", g.bases[ENEMY_SIDE].health)
+			g.isOver = true
+		}
 	}
 	return nil
 }
@@ -213,35 +224,20 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	str := fmt.Sprintf("(v%s) %.0f FPS vs %.0f TPS. Focus: %t, Angle: %.0f X:%0.f Y:%0.f (%d count)", GAME_VERSION, ebiten.ActualFPS(), ebiten.ActualTPS(), ebiten.IsFocused(), g.bases[0].attackAngle, g.bases[0].aimPoint.x, g.bases[0].aimPoint.y, len(g.bouncers))
 	ebitenutil.DebugPrint(g.ebitenImage, str)
 
-	for i := 0; i < len(g.bouncers); i++ {
-		g.bouncers[i].Draw(g.ebitenImage)
+	if !g.isOver {
+		for i := 0; i < len(g.bouncers); i++ {
+			g.bouncers[i].Draw(g.ebitenImage)
+		}
+
+		for i := 0; i < len(g.bases); i++ {
+			g.bases[i].Draw(g.ebitenImage)
+		}
+
+		var ops = &ebiten.DrawImageOptions{}
+		screen.DrawImage(g.ebitenImage, ops)
+	} else {
+		fmt.Println("Errr, game is over dude!")
 	}
-
-	for i := 0; i < len(g.bases); i++ {
-		g.bases[i].Draw(g.ebitenImage)
-	}
-
-	var ops = &ebiten.DrawImageOptions{}
-	screen.DrawImage(g.ebitenImage, ops)
-}
-
-// ----------------------------------------------------------------------------
-func batchDrawBouncers(screen *ebiten.Image, bouncers []Bouncer) {
-	vs := make([]ebiten.Vertex, 0, 100)
-	is := make([]uint16, 0, 100)
-
-	// collect all the shield vertices
-	for i := 0; i < len(bouncers); i++ {
-		ts, ti := bouncers[i].PrepareVSIS()
-		vs = append(vs, ts...)
-		is = append(is, ti...)
-	}
-
-	// now finally render them
-	op := &ebiten.DrawTrianglesOptions{}
-	op.FillRule = ebiten.NonZero
-	op.Blend = ebiten.BlendLighter
-	screen.DrawTriangles(vs, is, whiteSubImage, op)
 }
 
 // ----------------------------------------------------------------------------
