@@ -56,11 +56,12 @@ to have different options available.
 
 I used a variety of technologies to make this all happen:
 
-| Tech       | Where                     | Why                                |
-| ---------- | ------------------------- | ---------------------------------- |
-| Go         | <https://go.dev/>         | Development language of choice     |
-| Ebitengine | <https://ebitengine.org/> | Great 2D engine, with WASM support |
-| Task       | <https://taskfile.dev/>   | Build tool of choice               |
+| Tech         | Where                        | Why                                |
+| ------------ | ---------------------------- | ---------------------------------- |
+| Go           | <https://go.dev/>            | Development language of choice     |
+| Ebitengine   | <https://ebitengine.org/>    | Great 2D engine, with WASM support |
+| Task         | <https://taskfile.dev/>      | Build tool of choice               |
+| GoLangCILint | <https://golangci-lint.run/> | Go linter for code cleanup         |
 
 ### Tasks
 

@@ -29,6 +29,11 @@ tasks:
     cmds:
       - go run ./src/.
     silent: true
+  lint:
+    desc: Runs the golangci-lint tool
+    cmds:
+      - golangci-lint run
+    silent: true
   run:
     desc: Runs the files in the {{.OUTPUT_FOLDER}} folder as-is, no build steps envoked. On port 9000
     dir: "{{.OUTPUT_FOLDER}}"
