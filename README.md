@@ -75,6 +75,7 @@ Run `task` to see a list of available tasks. Some are:
 | buildwasm       | Builds the WASM project                                                         |
 | clean           | Removes the './bin/' folder                                                     |
 | default         | Lists available tasks                                                           |
+| lint            | Runs the 'golangci-lint' tool on the source code                                |
 | run             | Runs the files in the ./bin/ folder as-is, no build steps envoked. On port 9000 |
 | runwasm         | Runs the project in WASM on port 9000                                           |
 | setupexecjs     | Copies the wasm_exec.js and html files to the './bin/' folder                   |
