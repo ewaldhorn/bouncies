@@ -4,10 +4,15 @@ import (
 	"fmt"
 	"math/rand/v2"
 
+	"github.com/hajimehoshi/bitmapfont/v3"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
 )
+
+// ----------------------------------------------------------------------------
+var fontFace = text.NewGoXFace(bitmapfont.Face)
 
 // ----------------------------------------------------------------------------
 type Game struct {
@@ -204,15 +209,14 @@ func (g *Game) Update() error {
 		g.bouncers = tmpBouncers
 
 		if g.bases[PLAYER_SIDE].health <= 5 {
-			fmt.Printf("Player health at %d\n", g.bases[PLAYER_SIDE].health)
 			g.isOver = true
 		}
 
 		if g.bases[ENEMY_SIDE].health <= 5 {
-			fmt.Printf("Enemy health at %d\n", g.bases[ENEMY_SIDE].health)
 			g.isOver = true
 		}
 	}
+
 	return nil
 }
 
@@ -236,8 +240,17 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		var ops = &ebiten.DrawImageOptions{}
 		screen.DrawImage(g.ebitenImage, ops)
 	} else {
-		fmt.Println("Errr, game is over dude!")
+		renderGameOverText(screen)
 	}
+}
+
+// ----------------------------------------------------------------------------
+func renderGameOverText(screen *ebiten.Image) {
+	textOp := &text.DrawOptions{}
+	tw, th := text.Measure("Game Over", fontFace, textOp.LineSpacing)
+
+	textOp.GeoM.Translate(float64(SCREEN_WIDTH)/2-(tw/2), float64(SCREEN_HEIGHT)/2-(th/2))
+	text.Draw(screen, "Game Over", fontFace, textOp)
 }
 
 // ----------------------------------------------------------------------------

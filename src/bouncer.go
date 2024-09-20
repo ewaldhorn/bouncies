@@ -38,7 +38,10 @@ func (b *Bouncer) Init(homeBase HomeBase) {
 	b.colour = homeBase.baseColour
 
 	if b.side == PLAYER_SIDE {
-		if homeBase.attackAngle <= -90 {
+
+		if homeBase.attackAngle == -90 {
+			b.movementX = 0
+		} else if homeBase.attackAngle <= -90 {
 			b.movementX = -1
 		} else {
 			b.movementX = 1
