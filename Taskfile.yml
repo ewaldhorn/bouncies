@@ -30,9 +30,10 @@ tasks:
       - go run ./src/.
     silent: true
   lint:
-    desc: Runs the golangci-lint tool
+    desc: Runs the golangci-lint and staticcheck tools
     cmds:
       - golangci-lint run
+      - staticcheck ./src/...
     silent: true
   run:
     desc: Runs the files in the {{.OUTPUT_FOLDER}} folder as-is, no build steps envoked. On port 9000
