@@ -14,6 +14,7 @@ var currentId = 0
 type Bouncer struct {
 	side                 int
 	id                   int
+	speedup              int
 	hasBounced           bool
 	health, maxHealth    int
 	xPos, yPos, radius   float32
@@ -37,36 +38,19 @@ func (b *Bouncer) Init(homeBase HomeBase) {
 
 	b.colour = homeBase.baseColour
 
-	if b.side == PLAYER_SIDE {
+	aimX := homeBase.xPos + (homeBase.radius+25)*float32(math.Cos(float64(homeBase.attackAngle*math.Pi/180)))
+	aimY := homeBase.yPos + (homeBase.radius+25)*float32(math.Sin(float64(homeBase.attackAngle*math.Pi/180)))
 
-		if homeBase.attackAngle == -90 {
-			b.movementX = 0
-		} else if homeBase.attackAngle <= -90 {
-			b.movementX = -1
-		} else {
-			b.movementX = 1
-		}
+	deltaX := aimX - homeBase.xPos
+	deltaY := aimY - homeBase.yPos
 
-		if homeBase.attackAngle == 0 {
-			b.movementY = 0
-		} else if homeBase.attackAngle > 0 {
-			b.movementY = 1
-		} else {
-			b.movementY = -1
-		}
+	angle := math.Atan2(float64(deltaY), float64(deltaX))
+	b.movementX = float32(math.Cos(angle))
+	b.movementY = float32(math.Sin(angle))
 
-	} else {
-		if b.xPos <= homeBase.xPos {
-			b.movementX = -1
-		} else {
-			b.movementX = 1
-		}
-
-		if b.yPos <= homeBase.yPos {
-			b.movementY = -1
-		} else {
-			b.movementY = 1
-		}
+	if b.side == ENEMY_SIDE {
+		b.movementX *= -1.0
+		b.movementY *= -1.0
 	}
 
 	// TODO: Clean up magic values
@@ -115,20 +99,28 @@ func (b *Bouncer) Update() {
 		b.TakeHit(2)
 	}
 
-	if b.movementX > 4.0 {
-		b.movementX = 4.0
+	b.speedup += 1
+
+	if b.speedup > 30 {
+		b.speedup = 0
+		b.movementX *= 1.1
+		b.movementY *= 1.1
 	}
 
-	if b.movementX < -4.0 {
-		b.movementX = -4.0
+	if b.movementX > 5.0 {
+		b.movementX = 5.0
 	}
 
-	if b.movementY > 4.0 {
-		b.movementY = 4.0
+	if b.movementX < -5.0 {
+		b.movementX = -5.0
 	}
 
-	if b.movementY < -4.0 {
-		b.movementY = -4.0
+	if b.movementY > 5.0 {
+		b.movementY = 5.0
+	}
+
+	if b.movementY < -5.0 {
+		b.movementY = -5.0
 	}
 }
 
