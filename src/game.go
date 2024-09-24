@@ -65,12 +65,10 @@ func (g *Game) Update() error {
 
 			if ebiten.IsKeyPressed(ebiten.KeyArrowUp) || dx < 0 {
 				g.bases[0].AdjustAttackAngle(-2.0)
-				g.bases[1].AdjustAttackAngle(-2.0)
 			}
 
 			if ebiten.IsKeyPressed(ebiten.KeyArrowDown) || dx > 0 {
 				g.bases[0].AdjustAttackAngle(2.0)
-				g.bases[1].AdjustAttackAngle(2.0)
 			}
 
 			if ebiten.IsKeyPressed(ebiten.KeySpace) {
@@ -87,6 +85,7 @@ func (g *Game) Update() error {
 
 		// maybe the enemy feels like firing a shot or six
 		if g.bases[ENEMY_SIDE].ticksTillCanMaybeFire <= 1 {
+			g.bases[ENEMY_SIDE].AdjustEnemyAttackAngle(rand.IntN(100))
 			if rand.Int()%2 == 0 || g.bases[ENEMY_SIDE].bouncersAvailable == DEFAULT_MAX_BOUNCERS {
 				if g.bases[ENEMY_SIDE].bouncersAvailable > 0 {
 					g.bases[ENEMY_SIDE].bouncersAvailable -= 1
@@ -240,17 +239,25 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		var ops = &ebiten.DrawImageOptions{}
 		screen.DrawImage(g.ebitenImage, ops)
 	} else {
-		renderGameOverText(screen)
+		won := g.bases[PLAYER_SIDE].health > 0
+		renderGameOverText(screen, won)
 	}
 }
 
 // ----------------------------------------------------------------------------
-func renderGameOverText(screen *ebiten.Image) {
+func renderGameOverText(screen *ebiten.Image, won bool) {
 	textOp := &text.DrawOptions{}
-	tw, th := text.Measure("Game Over", fontFace, textOp.LineSpacing)
+	var str string
+	if won {
+		str = "Game Over - You Won!"
+	} else {
+		str = "Gave Over - You Lost!"
+	}
+
+	tw, th := text.Measure(str, fontFace, textOp.LineSpacing)
 
 	textOp.GeoM.Translate(float64(SCREEN_WIDTH)/2-(tw/2), float64(SCREEN_HEIGHT)/2-(th/2))
-	text.Draw(screen, "Game Over", fontFace, textOp)
+	text.Draw(screen, str, fontFace, textOp)
 }
 
 // ----------------------------------------------------------------------------

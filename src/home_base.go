@@ -27,7 +27,8 @@ type Vector2D struct {
 	x, y float32
 }
 
-var BouncerOffsets = []Vector2D{{x: -10, y: -5}, {x: 0, y: -5}, {x: 10, y: -5}, {x: -10, y: 5}, {x: 0, y: 5}, {x: 10, y: 5}}
+// pre-calced bouncer offsets
+var BouncerOffsets = []Vector2D{{x: -15, y: -5}, {x: -5, y: -5}, {x: 5, y: -5}, {x: 15, y: -5}, {x: -15, y: 5}, {x: -5, y: 5}, {x: 5, y: 5}, {x: 15, y: 5}}
 
 // ----------------------------------------------------------------------------
 // Sets up a HomeBase with default values
@@ -155,6 +156,15 @@ func (h *HomeBase) AdjustAttackAngle(num float32) {
 
 	if h.attackAngle > 28.0 {
 		h.attackAngle = 28.0
+	}
+}
+
+// ----------------------------------------------------------------------------
+func (h *HomeBase) AdjustEnemyAttackAngle(direction int) {
+	if direction < 10 {
+		h.AdjustAttackAngle(-2.0)
+	} else if direction > 90 {
+		h.AdjustAttackAngle(2.0)
 	}
 }
 
