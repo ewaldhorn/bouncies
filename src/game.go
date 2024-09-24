@@ -42,12 +42,12 @@ func (g *Game) Update() error {
 
 		if dx < 0 {
 			g.bases[0].AdjustAttackAngle(-2.0)
-			g.action = 3
+			g.action = 4
 		}
 
 		if dx > 0 {
 			g.bases[0].AdjustAttackAngle(2.0)
-			g.action = 3
+			g.action = 4
 		}
 
 		if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
@@ -57,18 +57,29 @@ func (g *Game) Update() error {
 				b.Init(g.bases[PLAYER_SIDE])
 				g.bouncers = append(g.bouncers, b)
 			}
-			g.action = 3
+			g.action = 4
 		}
 
 		if g.action <= 0 {
-			g.action = 3
 
 			if ebiten.IsKeyPressed(ebiten.KeyArrowUp) || dx < 0 {
-				g.bases[0].AdjustAttackAngle(-2.0)
+				g.bases[PLAYER_SIDE].AdjustAttackAngle(-2.0)
+				g.action = 4
+			}
+
+			if ebiten.IsKeyPressed(ebiten.KeyArrowLeft) {
+				g.bases[PLAYER_SIDE].AdjustAttackAngle(-10.0)
+				g.action = 4
 			}
 
 			if ebiten.IsKeyPressed(ebiten.KeyArrowDown) || dx > 0 {
 				g.bases[0].AdjustAttackAngle(2.0)
+				g.action = 4
+			}
+
+			if ebiten.IsKeyPressed(ebiten.KeyArrowRight) {
+				g.bases[PLAYER_SIDE].AdjustAttackAngle(10.0)
+				g.action = 4
 			}
 
 			if ebiten.IsKeyPressed(ebiten.KeySpace) {
@@ -78,8 +89,8 @@ func (g *Game) Update() error {
 					b.Init(g.bases[PLAYER_SIDE])
 					g.bouncers = append(g.bouncers, b)
 				}
+				g.action = 4
 			}
-
 		}
 		g.action -= 1
 
