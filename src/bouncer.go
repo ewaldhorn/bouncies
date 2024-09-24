@@ -45,8 +45,8 @@ func (b *Bouncer) Init(homeBase HomeBase) {
 	deltaY := aimY - homeBase.yPos
 
 	angle := math.Atan2(float64(deltaY), float64(deltaX))
-	b.movementX = float32(math.Cos(angle))
-	b.movementY = float32(math.Sin(angle))
+	b.movementX = float32(math.Cos(angle)) * 1.5
+	b.movementY = float32(math.Sin(angle)) * 1.5
 
 	if b.side == ENEMY_SIDE {
 		b.movementX *= -1.0
@@ -127,7 +127,6 @@ func (b *Bouncer) Update() {
 // ----------------------------------------------------------------------------
 func (b Bouncer) Draw(screen *ebiten.Image) {
 	// first draw shield
-	// drawArc(screen, b.xPos, b.yPos, b.radius, 3.0, 0.0, b.shieldRadians)
 	drawFilledArc(screen, b.xPos, b.yPos, b.radius+2, 0.0, b.shieldRadians, color.White)
 
 	// now draw bouncer
