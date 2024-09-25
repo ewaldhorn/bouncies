@@ -95,7 +95,7 @@ func (g *Game) Update() error {
 		g.action -= 1
 
 		// maybe the enemy feels like firing a shot or six
-		if g.bases[ENEMY_SIDE].ticksTillCanMaybeFire <= 1 {
+		if g.bases[ENEMY_SIDE].ticksTillCanMaybeFire <= 1 || g.bases[ENEMY_SIDE].bouncersAvailable >= 5 {
 			g.bases[ENEMY_SIDE].AdjustEnemyAttackAngle(rand.IntN(100))
 			if rand.Int()%2 == 0 || g.bases[ENEMY_SIDE].bouncersAvailable == DEFAULT_MAX_BOUNCERS {
 				if g.bases[ENEMY_SIDE].bouncersAvailable > 0 {
@@ -106,7 +106,7 @@ func (g *Game) Update() error {
 
 					if g.bases[ENEMY_SIDE].bouncersAvailable > 2 {
 						// maybe shoot again, because there's some ammo left
-						g.bases[ENEMY_SIDE].ticksTillCanMaybeFire = 20
+						g.bases[ENEMY_SIDE].ticksTillCanMaybeFire = 15
 					}
 				}
 			}
