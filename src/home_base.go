@@ -161,9 +161,9 @@ func (h *HomeBase) AdjustAttackAngle(num float32) {
 
 // ----------------------------------------------------------------------------
 func (h *HomeBase) AdjustEnemyAttackAngle(direction int) {
-	if direction < 10 {
+	if direction < 25 {
 		h.AdjustAttackAngle(-2.0)
-	} else if direction > 90 {
+	} else if direction > 75 {
 		h.AdjustAttackAngle(2.0)
 	}
 }
