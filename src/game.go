@@ -97,7 +97,7 @@ func (g *Game) Update() error {
 		// maybe the enemy feels like firing a shot or six
 		if g.bases[ENEMY_SIDE].ticksTillCanMaybeFire <= 1 || g.bases[ENEMY_SIDE].bouncersAvailable >= 5 {
 			g.bases[ENEMY_SIDE].AdjustEnemyAttackAngle(rand.IntN(100))
-			if rand.Int()%2 == 0 || g.bases[ENEMY_SIDE].bouncersAvailable == DEFAULT_MAX_BOUNCERS {
+			if rand.Int()%2 == 0 || g.bases[ENEMY_SIDE].bouncersAvailable >= (DEFAULT_MAX_BOUNCERS-1) {
 				if g.bases[ENEMY_SIDE].bouncersAvailable > 0 {
 					g.bases[ENEMY_SIDE].bouncersAvailable -= 1
 					b := Bouncer{}
@@ -162,8 +162,8 @@ func (g *Game) Update() error {
 								g.bouncers[inner].movementX *= 1.1
 								g.bouncers[inner].movementY *= 1.1
 
-								g.bouncers[outer].TakeHit(-5)
-								g.bouncers[inner].TakeHit(-5)
+								g.bouncers[outer].TakeHit(-2)
+								g.bouncers[inner].TakeHit(-2)
 							}
 
 							if rand.Int()%2 == 0 {
@@ -211,7 +211,7 @@ func (g *Game) Update() error {
 		// TODO optimise, append is horribly slow
 		tmpBouncers := make([]Bouncer, 0, 100)
 		for _, bouncer := range g.bouncers {
-			if bouncer.health > 10 {
+			if bouncer.health >= 10 {
 				bouncer.hasBounced = false
 				tmpBouncers = append(tmpBouncers, bouncer)
 			}
