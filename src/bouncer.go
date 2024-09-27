@@ -15,6 +15,7 @@ type Bouncer struct {
 	side                 int
 	id                   int
 	speedup              int
+	age                  int
 	hasBounced           bool
 	health, maxHealth    int
 	xPos, yPos, radius   float32
@@ -83,16 +84,20 @@ func (b *Bouncer) updateShield() {
 // ----------------------------------------------------------------------------
 // Bouncers gain energy from bouncing of the sides
 func (b *Bouncer) Update() {
+	b.age += 1
+
 	var halfrad = b.radius / 2.0
 	b.xPos += b.movementX
 	b.yPos += b.movementY
 
 	if b.xPos >= float32(SCREEN_WIDTH-int(halfrad)) || b.xPos <= halfrad {
 		b.movementX *= -1.2
+		b.TakeHit(5)
 	}
 
 	if b.yPos >= float32(SCREEN_HEIGHT-int(halfrad)) || b.yPos <= halfrad {
 		b.movementY *= -1.2
+		b.TakeHit(5)
 	}
 
 	if math.Abs(float64(b.movementX)) <= 0.1 && math.Abs(float64(b.movementY)) <= 0.1 {
@@ -121,6 +126,10 @@ func (b *Bouncer) Update() {
 
 	if b.movementY < -5.0 {
 		b.movementY = -5.0
+	}
+
+	if b.health < 30 || b.age > 1000 {
+		b.TakeHit(1)
 	}
 }
 
