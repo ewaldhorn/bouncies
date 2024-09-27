@@ -87,7 +87,7 @@ func (h *HomeBase) TakeDamage(amount int) {
 // ----------------------------------------------------------------------------
 // Allows the HomeBase to absorb returning bouncers
 func (h *HomeBase) AbsorbShield(amount int) {
-	h.health += amount
+	h.health += amount / 2
 
 	if h.health > DEFAULT_HOMEBASE_HEALTH {
 		h.health = DEFAULT_HOMEBASE_HEALTH

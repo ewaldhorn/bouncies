@@ -211,7 +211,7 @@ func (g *Game) Update() error {
 		// TODO optimise, append is horribly slow
 		tmpBouncers := make([]Bouncer, 0, 100)
 		for _, bouncer := range g.bouncers {
-			if bouncer.health >= 10 {
+			if bouncer.health >= 12 {
 				bouncer.hasBounced = false
 				tmpBouncers = append(tmpBouncers, bouncer)
 			}
