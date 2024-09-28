@@ -86,16 +86,15 @@ func (b *Bouncer) updateShield() {
 func (b *Bouncer) Update() {
 	b.age += 1
 
-	var halfrad = b.radius / 2.0
 	b.xPos += b.movementX
 	b.yPos += b.movementY
 
-	if b.xPos >= float32(SCREEN_WIDTH-int(halfrad)) || b.xPos <= halfrad {
+	if b.xPos >= float32(SCREEN_WIDTH-int(b.radius)) || b.xPos <= b.radius {
 		b.movementX *= -1.2
 		b.TakeHit(5)
 	}
 
-	if b.yPos >= float32(SCREEN_HEIGHT-int(halfrad)) || b.yPos <= halfrad {
+	if b.yPos >= float32(SCREEN_HEIGHT-int(b.radius)) || b.yPos <= b.radius {
 		b.movementY *= -1.2
 		b.TakeHit(5)
 	}
