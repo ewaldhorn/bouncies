@@ -11,7 +11,8 @@ in the future...
 
 ## Demo
 
-You can see a demo at <https://ewaldhorn.github.io/bouncies/>
+You can play a live demo at <https://ewaldhorn.github.io/bouncies/>
+This works best on a computer, though there's support planned for tablets eventually.
 
 ![Screen Shot](./screenshot.png "Screenshot")
 
