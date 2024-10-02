@@ -25,11 +25,11 @@ func init() {
 
 // ----------------------------------------------------------------------------
 // Draws an arc on the given screen element
-func drawArc(screen *ebiten.Image, xPos, yPos, radius, width, startAngle, endAngle float32) {
+func drawArc(screen *ebiten.Image, centerX, centerY, radius, width, startAngle, endAngle float32) {
 	var path vector.Path
 
-	path.MoveTo(xPos, yPos)
-	path.Arc(xPos, yPos, radius, startAngle, endAngle, vector.Clockwise)
+	path.MoveTo(centerX, centerY)
+	path.Arc(centerX, centerY, radius, startAngle, endAngle, vector.Clockwise)
 	path.Close()
 
 	op1 := &vector.StrokeOptions{}
@@ -52,9 +52,9 @@ func drawArc(screen *ebiten.Image, xPos, yPos, radius, width, startAngle, endAng
 
 // ----------------------------------------------------------------------------
 // Draws a filled arc
-func drawFilledArc(screen *ebiten.Image, xPos, yPos, radius, startAngle, endAngle float32, clr color.Color) {
+func drawFilledArc(screen *ebiten.Image, centerX, centerY, radius, startAngle, endAngle float32, clr color.Color) {
 	var path vector.Path
-	path.Arc(xPos, yPos, radius, startAngle, endAngle, vector.Clockwise)
+	path.Arc(centerX, centerY, radius, startAngle, endAngle, vector.Clockwise)
 	vs, is := path.AppendVerticesAndIndicesForFilling(nil, nil)
 
 	r, g, b, a := clr.RGBA()
