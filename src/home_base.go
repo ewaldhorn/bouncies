@@ -15,7 +15,7 @@ type HomeBase struct {
 	ticksTillHealthRegeneration            int
 	ticksTillCanMaybeFire                  int
 	bouncersAvailable, ticksTillNewBouncer int
-	xPos, yPos, radius                     float32
+	centerX, centerY, radius               float32
 	aimPoint                               Vector2D
 	baseColour                             color.RGBA
 	antialias                              bool
@@ -35,8 +35,8 @@ var BouncerOffsets = []Vector2D{{x: -15, y: -5}, {x: -5, y: -5}, {x: 5, y: -5}, 
 func (h *HomeBase) init(x, y float32) {
 	h.maxHealth = DEFAULT_HOMEBASE_HEALTH
 	h.health = h.maxHealth
-	h.xPos = x
-	h.yPos = y
+	h.centerX = x
+	h.centerY = y
 	h.ticksTillNewBouncer = 1
 	h.ticksTillHealthRegeneration = DEFAULT_TICKS_PER_SHIELD_REGEN
 	h.attackAngle = -36.0
@@ -108,40 +108,40 @@ func (h *HomeBase) Draw(screen *ebiten.Image) {
 
 	// draw attack attackAngle
 	if h.side == PLAYER_SIDE {
-		aimX = h.xPos + (h.radius+25)*float32(math.Cos(float64(h.attackAngle*math.Pi/180)))
-		aimY = h.yPos + (h.radius+25)*float32(math.Sin(float64(h.attackAngle*math.Pi/180)))
+		aimX = h.centerX + (h.radius+25)*float32(math.Cos(float64(h.attackAngle*math.Pi/180)))
+		aimY = h.centerY + (h.radius+25)*float32(math.Sin(float64(h.attackAngle*math.Pi/180)))
 	} else {
-		aimX = h.xPos - (h.radius+25)*float32(math.Cos(float64(h.attackAngle*math.Pi/180)))
-		aimY = h.yPos - (h.radius+25)*float32(math.Sin(float64(h.attackAngle*math.Pi/180)))
+		aimX = h.centerX - (h.radius+25)*float32(math.Cos(float64(h.attackAngle*math.Pi/180)))
+		aimY = h.centerY - (h.radius+25)*float32(math.Sin(float64(h.attackAngle*math.Pi/180)))
 	}
 
 	h.aimPoint = Vector2D{x: aimX, y: aimY}
 
-	vector.StrokeLine(screen, h.xPos, h.yPos, aimX, aimY, 3.0, COLOUR_RED, true)
+	vector.StrokeLine(screen, h.centerX, h.centerY, aimX, aimY, 3.0, COLOUR_RED, true)
 
 	healthInPercentage := 360 * (float32(h.health*100/DEFAULT_HOMEBASE_HEALTH) / 100)
 	radians := healthInPercentage * (math.Pi / 180)
 
 	//fmt.Println("For health at ", h.health, "of", h.maxHealth, "we get", healthInPercentage, "radians", radians)
 	// draw shield
-	drawArc(screen, h.xPos, h.yPos, h.radius, 5.0, 0.0, radians)
+	drawArc(screen, h.centerX, h.centerY, h.radius, 5.0, 0.0, radians)
 
 	// now draw base
-	vector.DrawFilledCircle(screen, h.xPos, h.yPos, h.radius-1, h.baseColour, h.antialias)
+	vector.DrawFilledCircle(screen, h.centerX, h.centerY, h.radius-1, h.baseColour, h.antialias)
 
 	// finally, draw available bouncers
 	for pos := range h.bouncersAvailable {
-		vector.DrawFilledCircle(screen, h.xPos+BouncerOffsets[pos].x, h.yPos+BouncerOffsets[pos].y, 4, color.White, h.antialias)
+		vector.DrawFilledCircle(screen, h.centerX+BouncerOffsets[pos].x, h.centerY+BouncerOffsets[pos].y, 4, color.White, h.antialias)
 	}
 
 	// debug section
 	if IS_DEBUGGING {
 		// mid point
-		vector.DrawFilledCircle(screen, h.xPos, h.yPos, 5, COLOUR_BLUE, true)
+		vector.DrawFilledCircle(screen, h.centerX, h.centerY, 5, COLOUR_BLUE, true)
 		// aim point
 		vector.DrawFilledCircle(screen, aimX, aimY, 5, COLOUR_DARK_RED, true)
 		// bounding box
-		vector.StrokeRect(screen, h.xPos-h.radius, h.yPos-h.radius, h.radius*2, h.radius*2, 2, COLOUR_BLUE, true)
+		vector.StrokeRect(screen, h.centerX-h.radius, h.centerY-h.radius, h.radius*2, h.radius*2, 2, COLOUR_BLUE, true)
 	}
 }
 

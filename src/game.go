@@ -126,8 +126,8 @@ func (g *Game) Update() error {
 		// check if bouncers have hit any bases
 		for hpos, base := range g.bases {
 			for pos, bouncer := range g.bouncers {
-				if bouncer.xPos >= base.xPos-base.radius && bouncer.xPos <= base.xPos+base.radius &&
-					bouncer.yPos >= base.yPos-base.radius && bouncer.yPos <= base.yPos+base.radius {
+				if bouncer.xPos >= base.centerX-base.radius && bouncer.xPos <= base.centerX+base.radius &&
+					bouncer.yPos >= base.centerY-base.radius && bouncer.yPos <= base.centerY+base.radius {
 					if base.side == bouncer.side {
 						g.bases[hpos].AbsorbShield(bouncer.health)
 					} else {
