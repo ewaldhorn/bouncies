@@ -19,7 +19,7 @@ type HomeBase struct {
 	aimPoint                               Vector2D
 	baseColour                             color.RGBA
 	antialias                              bool
-	attackAngle                            float32
+	attackAngle                            float64
 }
 
 // ----------------------------------------------------------------------------
@@ -27,11 +27,11 @@ type Vector2D struct {
 	x, y float32
 }
 
-// pre-calced bouncer offsets
+// pre-calculated bouncer offsets
 var BouncerOffsets = []Vector2D{{x: -15, y: -5}, {x: -5, y: -5}, {x: 5, y: -5}, {x: 15, y: -5}, {x: -15, y: 5}, {x: -5, y: 5}, {x: 5, y: 5}, {x: 15, y: 5}}
 
 // ----------------------------------------------------------------------------
-// Sets up a HomeBase with default values
+// Initialises a HomeBase at the given x,y coordinates.
 func (h *HomeBase) init(x, y float32) {
 	h.maxHealth = DEFAULT_HOMEBASE_HEALTH
 	h.health = h.maxHealth
@@ -44,7 +44,10 @@ func (h *HomeBase) init(x, y float32) {
 }
 
 // ----------------------------------------------------------------------------
-// Handles respawning of bouncers and shield regeneration
+// Called once per frame, and handles several things:
+// - checks if it's time to spawn a new bouncer
+// - checks if it's time to regenerate some health
+// - checks if it's time to be able to fire yet
 func (h *HomeBase) Update() {
 	h.ticksTillNewBouncer -= 1
 	if h.ticksTillNewBouncer <= 0 {
@@ -143,7 +146,7 @@ func (h *HomeBase) Draw(screen *ebiten.Image) {
 }
 
 // ----------------------------------------------------------------------------
-func (h *HomeBase) AdjustAttackAngle(num float32) {
+func (h *HomeBase) AdjustAttackAngle(num float64) {
 	if h.side == PLAYER_SIDE {
 		h.attackAngle += num
 	} else {

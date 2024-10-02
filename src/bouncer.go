@@ -10,6 +10,13 @@ import (
 
 var currentId = 0
 
+const (
+	maxId         = 100000000
+	aimOffset     = 25
+	bouncerRadius = 4
+	initialHealth = 100
+)
+
 // ----------------------------------------------------------------------------
 type Bouncer struct {
 	side                 int
@@ -25,45 +32,66 @@ type Bouncer struct {
 }
 
 // ----------------------------------------------------------------------------
-func (b *Bouncer) Init(homeBase HomeBase) {
-	b.side = homeBase.side
-	b.id = currentId
-	currentId += 1
-	if currentId > 100000000 {
-		currentId = 0
-	}
-
-	b.hasBounced = false
+// Sets the Bouncer's initial position to the HomeBase's aim point
+func (b *Bouncer) initPosition(homeBase HomeBase) {
 	b.xPos = homeBase.aimPoint.x
 	b.yPos = homeBase.aimPoint.y
+}
 
-	b.colour = homeBase.baseColour
+// ----------------------------------------------------------------------------
+// Sets the Bouncer's initial movement to head towards the enemy base.
+// The exact movement is determined by the HomeBase's attackAngle.
+func (b *Bouncer) initVelocity(homeBase HomeBase) {
+	aimX := homeBase.xPos + (homeBase.radius+aimOffset)*float32(math.Cos(homeBase.attackAngle*math.Pi/180))
+	aimY := homeBase.yPos + (homeBase.radius+aimOffset)*float32(math.Sin(homeBase.attackAngle*math.Pi/180))
 
-	aimX := homeBase.xPos + (homeBase.radius+25)*float32(math.Cos(float64(homeBase.attackAngle*math.Pi/180)))
-	aimY := homeBase.yPos + (homeBase.radius+25)*float32(math.Sin(float64(homeBase.attackAngle*math.Pi/180)))
+	horizontalOffset := aimX - homeBase.xPos
+	verticalOffset := aimY - homeBase.yPos
 
-	deltaX := aimX - homeBase.xPos
-	deltaY := aimY - homeBase.yPos
-
-	angle := math.Atan2(float64(deltaY), float64(deltaX))
-	b.movementX = float32(math.Cos(angle)) * 1.5
-	b.movementY = float32(math.Sin(angle)) * 1.5
+	angle := math.Atan2(float64(verticalOffset), float64(horizontalOffset))
+	b.movementX = float32(math.Cos(angle) * 1.5)
+	b.movementY = float32(math.Sin(angle) * 1.5)
 
 	if b.side == ENEMY_SIDE {
 		b.movementX *= -1.0
 		b.movementY *= -1.0
 	}
+}
 
-	// TODO: Clean up magic values
-	b.radius = 4
-	b.maxHealth = 100
+// ----------------------------------------------------------------------------
+// Sets the Bouncer's health to its maximum value.
+func (b *Bouncer) initHealth() {
+	b.maxHealth = initialHealth
 	b.health = b.maxHealth
+}
+
+// ----------------------------------------------------------------------------
+// Initialises a Bouncer, setting its position, velocity and health. It also
+// sets the Bouncer's shield data.
+func (b *Bouncer) Init(homeBase HomeBase) {
+	b.side = homeBase.side
+	b.id = currentId
+	currentId += 1
+	if currentId > maxId {
+		currentId = 0
+	}
+
+	b.hasBounced = false
+	b.initPosition(homeBase)
+	b.initVelocity(homeBase)
+	b.initHealth()
+
+	b.colour = homeBase.baseColour
+	b.radius = bouncerRadius
 
 	// need to set the shield data now
 	b.updateShield()
 }
 
 // ----------------------------------------------------------------------------
+// TakeHit reduces the Bouncer's health by the given number. It
+// will not go below 0, and will not go above the maximum health.
+// When the health changes, the shield is updated.
 func (b *Bouncer) TakeHit(num int) {
 	b.health -= num
 	if b.health < 0 {
@@ -76,13 +104,19 @@ func (b *Bouncer) TakeHit(num int) {
 }
 
 // ----------------------------------------------------------------------------
+// Calculates the shield angle based on the current health. The shield
+// angle is the number of radians that the shield arc should cover.
 func (b *Bouncer) updateShield() {
 	healthInPercentage := 360 * (float32(b.health*100/b.maxHealth) / 100)
 	b.shieldRadians = healthInPercentage * RADIAN
 }
 
 // ----------------------------------------------------------------------------
-// Bouncers gain energy from bouncing of the sides
+// The Update function is called once per frame and moves the Bouncer one step. It
+// also checks for collisions with the screen edges and adjusts the Bouncer's
+// movement accordingly. The Bouncer also gains speed over time up to a limit.
+// The Bouncer's health is decreased over time, and there is a minimum health
+// threshold.
 func (b *Bouncer) Update() {
 	b.age += 1
 
@@ -133,6 +167,7 @@ func (b *Bouncer) Update() {
 }
 
 // ----------------------------------------------------------------------------
+// Renders the Bouncer on to the provided screen
 func (b Bouncer) Draw(screen *ebiten.Image) {
 	// first draw shield
 	drawFilledArc(screen, b.xPos, b.yPos, b.radius+2, 0.0, b.shieldRadians, color.White)
