@@ -12,9 +12,11 @@ var currentId = 0
 
 const (
 	maxId         = 100000000
+	maxAge        = 1250
 	aimOffset     = 25
 	bouncerRadius = 4
 	initialHealth = 100
+	maxSpeed      = 6.0
 )
 
 // ----------------------------------------------------------------------------
@@ -115,14 +117,31 @@ func (b *Bouncer) updateShield() {
 // The Update function is called once per frame and moves the Bouncer one step. It
 // also checks for collisions with the screen edges and adjusts the Bouncer's
 // movement accordingly. The Bouncer also gains speed over time up to a limit.
-// The Bouncer's health is decreased over time, and there is a minimum health
-// threshold.
-func (b *Bouncer) Update() {
-	b.age += 1
+// The Bouncer's health is decreased over time if it is moving too slowly.
+func (b *Bouncer) updateSpeed() {
+	b.speedup += 1
 
-	b.xPos += b.movementX
-	b.yPos += b.movementY
+	if b.speedup > 30 {
+		b.speedup = 0
+		b.movementX *= 1.1
+		b.movementY *= 1.1
+	}
 
+	// clamp speed
+	if math.Abs(float64(b.movementX)) > maxSpeed || math.Abs(float64(b.movementY)) > maxSpeed {
+		b.movementX = float32(math.Copysign(maxSpeed, float64(b.movementX)))
+		b.movementY = float32(math.Copysign(maxSpeed, float64(b.movementY)))
+	}
+
+	if math.Abs(float64(b.movementX)) <= 0.1 && math.Abs(float64(b.movementY)) <= 0.1 {
+		b.TakeHit(1)
+	}
+}
+
+// ----------------------------------------------------------------------------
+// Checks for collisions with the screen edges and adjusts the Bouncer's
+// movement accordingly. When it hits an edge, the Bouncer takes damage.
+func (b *Bouncer) checkCollisions() {
 	if b.xPos >= float32(SCREEN_WIDTH-int(b.radius)) || b.xPos <= b.radius {
 		b.movementX *= -1.2
 		b.TakeHit(5)
@@ -132,36 +151,24 @@ func (b *Bouncer) Update() {
 		b.movementY *= -1.2
 		b.TakeHit(5)
 	}
+}
 
-	if math.Abs(float64(b.movementX)) <= 0.1 && math.Abs(float64(b.movementY)) <= 0.1 {
-		b.TakeHit(2)
-	}
+// ----------------------------------------------------------------------------
+// Called once per frame and moves the Bouncer one step. It also checks for collisions
+// with the screen edges and adjusts the Bouncer's movement accordingly. The Bouncer
+// also gains speed over time up to a limit. The Bouncer's health is decreased over
+// time if it is moving too slowly. If the Bouncer's health falls below 30 or it
+// reaches its maximum age, it takes damage.
+func (b *Bouncer) Update() {
+	b.age += 1
 
-	b.speedup += 1
+	b.xPos += b.movementX
+	b.yPos += b.movementY
 
-	if b.speedup > 30 {
-		b.speedup = 0
-		b.movementX *= 1.1
-		b.movementY *= 1.1
-	}
+	b.checkCollisions()
+	b.updateSpeed()
 
-	if b.movementX > 5.0 {
-		b.movementX = 5.0
-	}
-
-	if b.movementX < -5.0 {
-		b.movementX = -5.0
-	}
-
-	if b.movementY > 5.0 {
-		b.movementY = 5.0
-	}
-
-	if b.movementY < -5.0 {
-		b.movementY = -5.0
-	}
-
-	if b.health < 30 || b.age > 1000 {
+	if b.health < 30 || b.age > maxAge {
 		b.TakeHit(1)
 	}
 }
