@@ -102,7 +102,7 @@ func (g *Game) Update() error {
 			}
 
 			if ebiten.IsKeyPressed(ebiten.KeyArrowDown) || dx > 0 {
-				g.bases[0].AdjustAttackAngle(2.0)
+				g.bases[PLAYER_SIDE].AdjustAttackAngle(2.0)
 				g.action = 4
 			}
 
@@ -112,11 +112,8 @@ func (g *Game) Update() error {
 			}
 
 			if ebiten.IsKeyPressed(ebiten.KeySpace) {
-				if g.bases[PLAYER_SIDE].bouncersAvailable > 0 {
-					g.bases[PLAYER_SIDE].bouncersAvailable -= 1
-					b := Bouncer{}
-					b.Init(g.bases[PLAYER_SIDE])
-					g.bouncers = append(g.bouncers, b)
+				if didFire, bouncer := g.bases[PLAYER_SIDE].FireBouncer(); didFire {
+					g.bouncers = append(g.bouncers, *bouncer)
 				}
 				g.action = 4
 			}
@@ -124,20 +121,16 @@ func (g *Game) Update() error {
 		g.action -= 1
 
 		// maybe the enemy feels like firing a shot or six
-		if g.bases[ENEMY_SIDE].ticksTillCanMaybeFire <= 1 || g.bases[ENEMY_SIDE].bouncersAvailable >= 5 {
+		if rand.Int()%2 == 0 && (g.bases[ENEMY_SIDE].ticksTillCanMaybeFire <= 1 || g.bases[ENEMY_SIDE].bouncersAvailable >= (DEFAULT_MAX_BOUNCERS-1)) {
 			g.bases[ENEMY_SIDE].AdjustEnemyAttackAngle(rand.IntN(100))
-			if rand.Int()%2 == 0 || g.bases[ENEMY_SIDE].bouncersAvailable >= (DEFAULT_MAX_BOUNCERS-1) {
-				if g.bases[ENEMY_SIDE].bouncersAvailable > 0 {
-					g.bases[ENEMY_SIDE].bouncersAvailable -= 1
-					b := Bouncer{}
-					b.Init(g.bases[ENEMY_SIDE])
-					g.bouncers = append(g.bouncers, b)
+			if didFire, bouncer := g.bases[ENEMY_SIDE].FireBouncer(); didFire {
+				g.bouncers = append(g.bouncers, *bouncer)
+				g.bases[ENEMY_SIDE].ticksTillCanMaybeFire = DEFAULT_FIRE_DELAY
+			}
 
-					if g.bases[ENEMY_SIDE].bouncersAvailable > 2 {
-						// maybe shoot again, because there's some ammo left
-						g.bases[ENEMY_SIDE].ticksTillCanMaybeFire = 15
-					}
-				}
+			if g.bases[ENEMY_SIDE].bouncersAvailable >= 2 {
+				// maybe try to shoot again soon, because there's some ammo left
+				g.bases[ENEMY_SIDE].ticksTillCanMaybeFire = 15
 			}
 		}
 
