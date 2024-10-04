@@ -122,9 +122,15 @@ func (h *HomeBase) Draw(screen *ebiten.Image) {
 	healthInPercentage := 360 * (float32(h.health*100/DEFAULT_HOMEBASE_HEALTH) / 100)
 	radians := healthInPercentage * (math.Pi / 180)
 
-	//fmt.Println("For health at ", h.health, "of", h.maxHealth, "we get", healthInPercentage, "radians", radians)
 	// draw shield
-	drawArc(screen, h.centerX, h.centerY, h.radius, 5.0, 0.0, radians)
+	shieldColour := COLOUR_SHIELD_FULL
+	if h.health < (h.maxHealth / 2) {
+		shieldColour = COLOUR_SHIELD_DAMAGED
+	}
+	if h.health < (h.maxHealth / 3) {
+		shieldColour = COLOUR_SHIELD_FAILING
+	}
+	drawArc(screen, h.centerX, h.centerY, h.radius, 5.0, 0.0, radians, shieldColour)
 
 	// now draw base
 	vector.DrawFilledCircle(screen, h.centerX, h.centerY, h.radius-1, h.baseColour, h.antialias)
@@ -183,7 +189,7 @@ func createPlayerHomeBase() HomeBase {
 
 // ----------------------------------------------------------------------------
 func createEnemyHomeBase() HomeBase {
-	enemyBase := HomeBase{side: ENEMY_SIDE, radius: 30, baseColour: COLOUR_RED, antialias: true}
+	enemyBase := HomeBase{side: ENEMY_SIDE, radius: 30, baseColour: COLOUR_BLUE, antialias: true}
 	enemyBase.init(float32(SCREEN_WIDTH)-enemyBase.radius-DEFAULT_BASE_OFFSET_BUFFER, enemyBase.radius+DEFAULT_BASE_OFFSET_BUFFER)
 	return enemyBase
 }
