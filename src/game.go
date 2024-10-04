@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"math/rand/v2"
 
 	"github.com/hajimehoshi/bitmapfont/v3"
@@ -60,30 +61,33 @@ func (g *Game) checkForGameEnders() {
 }
 
 // ----------------------------------------------------------------------------
+func (game *Game) handleMouseInteraction() float64 {
+	dx, _ := ebiten.Wheel()
+
+	// check for movement via the wheel
+	if dx != 0 {
+		angle := math.Copysign(2.0, dx)
+		game.bases[PLAYER_SIDE].AdjustAttackAngle(angle)
+		game.action = 4
+	}
+
+	// check for firing via the mouse
+	if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
+		if didFire, bouncer := game.bases[PLAYER_SIDE].FireBouncer(); didFire {
+			game.bouncers = append(game.bouncers, *bouncer)
+		}
+
+		game.action = 4
+	}
+
+	return dx
+}
+
+// ----------------------------------------------------------------------------
 func (g *Game) Update() error {
 	if ebiten.IsFocused() && !g.isOver {
+		dx := g.handleMouseInteraction()
 		// handle user interaction
-		dx, _ := ebiten.Wheel()
-
-		if dx < 0 {
-			g.bases[0].AdjustAttackAngle(-2.0)
-			g.action = 4
-		}
-
-		if dx > 0 {
-			g.bases[0].AdjustAttackAngle(2.0)
-			g.action = 4
-		}
-
-		if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
-			if g.bases[PLAYER_SIDE].bouncersAvailable > 0 {
-				g.bases[PLAYER_SIDE].bouncersAvailable -= 1
-				b := Bouncer{}
-				b.Init(g.bases[PLAYER_SIDE])
-				g.bouncers = append(g.bouncers, b)
-			}
-			g.action = 4
-		}
 
 		if g.action <= 0 {
 

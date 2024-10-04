@@ -195,6 +195,18 @@ func (h *HomeBase) AdjustEnemyAttackAngle(direction int) {
 	}
 }
 
+// ----------------------------------------------------------------------------
+func (h *HomeBase) FireBouncer() (bool, *Bouncer) {
+	if h.bouncersAvailable > 0 {
+		h.bouncersAvailable -= 1
+		b := Bouncer{}
+		b.Init(*h)
+		return true, &b
+	}
+
+	return false, nil
+}
+
 // ========================================================== Utility Functions
 // Handy for doing odd jobs that are semi-related to the HomeBase struct
 
