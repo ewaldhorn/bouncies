@@ -102,8 +102,8 @@ func (h *HomeBase) AbsorbShield(amount int) {
 }
 
 // ----------------------------------------------------------------------------
-// Renders the HomeBase on to the provided screen
-func (h *HomeBase) Draw(screen *ebiten.Image) {
+// Give the player some kind of indication of where the aim point is.
+func (h *HomeBase) drawAimPoint(screen *ebiten.Image) {
 	var aimX, aimY float32
 
 	// draw attack attackAngle
@@ -117,8 +117,21 @@ func (h *HomeBase) Draw(screen *ebiten.Image) {
 
 	h.aimPoint = Vector2D{x: aimX, y: aimY}
 
-	vector.StrokeLine(screen, h.centerX, h.centerY, aimX, aimY, 3.0, COLOUR_RED, true)
+	// you can't see where the opponent is aiming
+	if h.side == PLAYER_SIDE {
+		vector.StrokeLine(screen, h.centerX, h.centerY, aimX, aimY, 3.0, COLOUR_RED, true)
+	}
 
+	// debug section
+	if IS_DEBUGGING {
+		// aim point
+		vector.DrawFilledCircle(screen, aimX, aimY, 5, COLOUR_DARK_RED, true)
+	}
+}
+
+// ----------------------------------------------------------------------------
+// Draws the base shield, depending on the health status, this colour changes.
+func (h *HomeBase) drawshield(screen *ebiten.Image) {
 	healthInPercentage := 360 * (float32(h.health*100/DEFAULT_HOMEBASE_HEALTH) / 100)
 	radians := healthInPercentage * (math.Pi / 180)
 
@@ -131,6 +144,13 @@ func (h *HomeBase) Draw(screen *ebiten.Image) {
 		shieldColour = COLOUR_SHIELD_FAILING
 	}
 	drawArc(screen, h.centerX, h.centerY, h.radius, 5.0, 0.0, radians, shieldColour)
+}
+
+// ----------------------------------------------------------------------------
+// Renders the HomeBase on to the provided screen
+func (h *HomeBase) Draw(screen *ebiten.Image) {
+	h.drawAimPoint(screen)
+	h.drawshield(screen)
 
 	// now draw base
 	vector.DrawFilledCircle(screen, h.centerX, h.centerY, h.radius-1, h.baseColour, h.antialias)
@@ -144,8 +164,6 @@ func (h *HomeBase) Draw(screen *ebiten.Image) {
 	if IS_DEBUGGING {
 		// mid point
 		vector.DrawFilledCircle(screen, h.centerX, h.centerY, 5, COLOUR_BLUE, true)
-		// aim point
-		vector.DrawFilledCircle(screen, aimX, aimY, 5, COLOUR_DARK_RED, true)
 		// bounding box
 		vector.StrokeRect(screen, h.centerX-h.radius, h.centerY-h.radius, h.radius*2, h.radius*2, 2, COLOUR_BLUE, true)
 	}
