@@ -268,6 +268,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 // ----------------------------------------------------------------------------
 func renderGameOverText(screen *ebiten.Image, won bool) {
 	textOp := &text.DrawOptions{}
+
 	var str string
 	if won {
 		str = "Game Over - You Won!"

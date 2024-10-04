@@ -131,18 +131,21 @@ func (h *HomeBase) drawAimPoint(screen *ebiten.Image) {
 
 // ----------------------------------------------------------------------------
 // Draws the base shield, depending on the health status, this colour changes.
-func (h *HomeBase) drawshield(screen *ebiten.Image) {
+func (h *HomeBase) drawShield(screen *ebiten.Image) {
 	healthInPercentage := 360 * (float32(h.health*100/DEFAULT_HOMEBASE_HEALTH) / 100)
 	radians := healthInPercentage * (math.Pi / 180)
 
 	// draw shield
 	shieldColour := COLOUR_SHIELD_FULL
+
 	if h.health < (h.maxHealth / 2) {
 		shieldColour = COLOUR_SHIELD_DAMAGED
 	}
+
 	if h.health < (h.maxHealth / 3) {
 		shieldColour = COLOUR_SHIELD_FAILING
 	}
+
 	drawArc(screen, h.centerX, h.centerY, h.radius, 5.0, 0.0, radians, shieldColour)
 }
 
@@ -150,7 +153,7 @@ func (h *HomeBase) drawshield(screen *ebiten.Image) {
 // Renders the HomeBase on to the provided screen
 func (h *HomeBase) Draw(screen *ebiten.Image) {
 	h.drawAimPoint(screen)
-	h.drawshield(screen)
+	h.drawShield(screen)
 
 	// now draw base
 	vector.DrawFilledCircle(screen, h.centerX, h.centerY, h.radius-1, h.baseColour, h.antialias)
@@ -167,6 +170,11 @@ func (h *HomeBase) Draw(screen *ebiten.Image) {
 		// bounding box
 		vector.StrokeRect(screen, h.centerX-h.radius, h.centerY-h.radius, h.radius*2, h.radius*2, 2, COLOUR_BLUE, true)
 	}
+}
+
+// ----------------------------------------------------------------------------
+func (h HomeBase) IsAlive() bool {
+	return h.health > 0
 }
 
 // ----------------------------------------------------------------------------

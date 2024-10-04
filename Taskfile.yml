@@ -24,7 +24,7 @@ tasks:
       - cp $(go env GOROOT)/misc/wasm/wasm_exec.js {{.OUTPUT_FOLDER}}
       - cp ./html/* {{.OUTPUT_FOLDER}}
     silent: true
-  test:
+  play:
     desc: Runs the desktop project
     cmds:
       - go run ./src/.
@@ -58,4 +58,15 @@ tasks:
     cmds:
       - task setupexecjs
       - env GOOS=js GOARCH=wasm go build -ldflags="-s -w" -o {{.OUTPUT_FOLDER}}{{.PROJECT_NAME}}.wasm ./src/.
+    silent: true
+  test:
+    desc: Tests the project.
+    cmds:
+      - go test -v ./src/.
+    silent: true
+  coverreport:
+    desc: Shows test coverage report for the app
+    cmds:
+      - go test -coverprofile=coverage.out ./src/.
+      - go tool cover -html=coverage.out
     silent: true
