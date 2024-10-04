@@ -24,14 +24,39 @@ type Game struct {
 }
 
 // ----------------------------------------------------------------------------
-func (g *Game) initNewGame() {
-	g.bases = []HomeBase{createPlayerHomeBase(), createEnemyHomeBase()}
-	g.ebitenImage = ebiten.NewImage(SCREEN_WIDTH, SCREEN_HEIGHT)
+func (game *Game) initNewGame() {
+	game.bases = []HomeBase{createPlayerHomeBase(), createEnemyHomeBase()}
+	game.ebitenImage = ebiten.NewImage(SCREEN_WIDTH, SCREEN_HEIGHT)
 }
 
 // ----------------------------------------------------------------------------
-func (g *Game) initBouncers() {
-	g.bouncers = make([]Bouncer, 0, 100)
+func (game *Game) initBouncers() {
+	game.bouncers = make([]Bouncer, 0, 100)
+}
+
+// ----------------------------------------------------------------------------
+func (game *Game) updateBouncers() {
+	for pos := range game.bouncers {
+		game.bouncers[pos].Update()
+	}
+}
+
+// ----------------------------------------------------------------------------
+func (g *Game) updateBases() {
+	for pos := range g.bases {
+		g.bases[pos].Update()
+	}
+}
+
+// ----------------------------------------------------------------------------
+func (g *Game) checkForGameEnders() {
+	if g.bases[PLAYER_SIDE].health <= 5 {
+		g.isOver = true
+	}
+
+	if g.bases[ENEMY_SIDE].health <= 5 {
+		g.isOver = true
+	}
 }
 
 // ----------------------------------------------------------------------------
@@ -113,15 +138,8 @@ func (g *Game) Update() error {
 		}
 
 		// now for game object updates
-		for pos, bouncer := range g.bouncers {
-			bouncer.Update()
-			g.bouncers[pos] = bouncer
-		}
-
-		for pos, base := range g.bases {
-			base.Update()
-			g.bases[pos] = base
-		}
+		g.updateBouncers()
+		g.updateBases()
 
 		// check if bouncers have hit any bases
 		for hpos, base := range g.bases {
@@ -218,13 +236,8 @@ func (g *Game) Update() error {
 		}
 		g.bouncers = tmpBouncers
 
-		if g.bases[PLAYER_SIDE].health <= 5 {
-			g.isOver = true
-		}
+		g.checkForGameEnders()
 
-		if g.bases[ENEMY_SIDE].health <= 5 {
-			g.isOver = true
-		}
 	}
 
 	return nil
