@@ -23,7 +23,7 @@ const (
 type Bouncer struct {
 	side                 int
 	id                   int
-	speedup              int
+	speedupTick          int
 	age                  int
 	hasBounced           bool
 	health, maxHealth    int
@@ -44,8 +44,8 @@ func (b *Bouncer) initPosition(homeBase HomeBase) {
 // Sets the Bouncer's initial movement to head towards the enemy base.
 // The exact movement is determined by the HomeBase's attackAngle.
 func (b *Bouncer) initVelocity(homeBase HomeBase) {
-	aimX := homeBase.centerX + (homeBase.radius+aimOffset)*float32(math.Cos(homeBase.attackAngle*math.Pi/180))
-	aimY := homeBase.centerY + (homeBase.radius+aimOffset)*float32(math.Sin(homeBase.attackAngle*math.Pi/180))
+	aimX := homeBase.aimPoint.x
+	aimY := homeBase.aimPoint.y
 
 	horizontalOffset := aimX - homeBase.centerX
 	verticalOffset := aimY - homeBase.centerY
@@ -53,11 +53,6 @@ func (b *Bouncer) initVelocity(homeBase HomeBase) {
 	angle := math.Atan2(float64(verticalOffset), float64(horizontalOffset))
 	b.movementX = float32(math.Cos(angle) * 1.5)
 	b.movementY = float32(math.Sin(angle) * 1.5)
-
-	if b.side == ENEMY_SIDE {
-		b.movementX *= -1.0
-		b.movementY *= -1.0
-	}
 }
 
 // ----------------------------------------------------------------------------
@@ -119,10 +114,10 @@ func (b *Bouncer) updateShield() {
 // movement accordingly. The Bouncer also gains speed over time up to a limit.
 // The Bouncer's health is decreased over time if it is moving too slowly.
 func (b *Bouncer) updateSpeed() {
-	b.speedup += 1
+	b.speedupTick += 1
 
-	if b.speedup > 30 {
-		b.speedup = 0
+	if b.speedupTick > 30 {
+		b.speedupTick = 0
 		b.movementX *= 1.1
 		b.movementY *= 1.1
 	}
