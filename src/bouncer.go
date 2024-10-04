@@ -44,13 +44,11 @@ func (b *Bouncer) initPosition(homeBase HomeBase) {
 // Sets the Bouncer's initial movement to head towards the enemy base.
 // The exact movement is determined by the HomeBase's attackAngle.
 func (b *Bouncer) initVelocity(homeBase HomeBase) {
-	aimX := homeBase.aimPoint.x
-	aimY := homeBase.aimPoint.y
-
-	horizontalOffset := aimX - homeBase.centerX
-	verticalOffset := aimY - homeBase.centerY
+	horizontalOffset := b.xPos - homeBase.centerX
+	verticalOffset := b.yPos - homeBase.centerY
 
 	angle := math.Atan2(float64(verticalOffset), float64(horizontalOffset))
+
 	b.movementX = float32(math.Cos(angle) * 1.5)
 	b.movementY = float32(math.Sin(angle) * 1.5)
 }
