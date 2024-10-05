@@ -4,9 +4,21 @@ import (
 	"testing"
 )
 
+const (
+	KNOWN_X = 150
+	KNOWN_Y = 125
+)
+
 // ----------------------------------------------------------------------------
 func createKnownHomeBase() *HomeBase {
 	return &HomeBase{centerX: 100, centerY: 101, radius: 50, health: DEFAULT_HOMEBASE_HEALTH}
+}
+
+// ----------------------------------------------------------------------------
+func createDefaultHomeBase() *HomeBase {
+	base := &HomeBase{}
+	base.init(KNOWN_X, KNOWN_Y)
+	return base
 }
 
 // ----------------------------------------------------------------------------
@@ -21,6 +33,19 @@ func TestHomeBaseCreation(t *testing.T) {
 	}
 	if base.radius != 50 {
 		t.Errorf("Expected radius to be 50, but got %f", base.radius)
+	}
+}
+
+// ----------------------------------------------------------------------------
+func TestHomeBaseInit(t *testing.T) {
+	base := createDefaultHomeBase()
+
+	if base.centerX != KNOWN_X || base.centerY != KNOWN_Y {
+		t.Errorf("init failed base created with (%f,%f) as CenterX,CenterY, expected (%d,%d)", base.centerX, base.centerY, KNOWN_X, KNOWN_Y)
+	}
+
+	if base.health != base.maxHealth || base.maxHealth != DEFAULT_HOMEBASE_HEALTH {
+		t.Errorf("init failed base created with health %d/%d, expected %d/%d", base.health, base.maxHealth, DEFAULT_HOMEBASE_HEALTH, DEFAULT_HOMEBASE_HEALTH)
 	}
 }
 
