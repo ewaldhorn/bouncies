@@ -59,6 +59,27 @@ func TestHomeBaseTakeDamage(t *testing.T) {
 }
 
 // ----------------------------------------------------------------------------
+func TestHomeBaseAbsorbShield(t *testing.T) {
+	base := createKnownHomeBase()
+	base.TakeDamage(750)
+
+	if base.health != DEFAULT_HOMEBASE_HEALTH-750 {
+		t.Errorf("Expected health to be %d, but got %d", DEFAULT_HOMEBASE_HEALTH-750, base.health)
+	}
+
+	base.AbsorbShield(100) // remember absorb only takes half
+	if base.health != DEFAULT_HOMEBASE_HEALTH-700 {
+		t.Errorf("Expected health to be %d, but got %d", DEFAULT_HOMEBASE_HEALTH-700, base.health)
+	}
+
+	base.AbsorbShield(5000)
+	if base.health != DEFAULT_HOMEBASE_HEALTH {
+		t.Errorf("Expected health to be %d, but got %d", DEFAULT_HOMEBASE_HEALTH, base.health)
+	}
+
+}
+
+// ----------------------------------------------------------------------------
 func TestHomeBaseTakeDamageOutsized(t *testing.T) {
 	base := createKnownHomeBase()
 
