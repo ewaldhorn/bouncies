@@ -22,7 +22,7 @@ func createDefaultHomeBase() *HomeBase {
 }
 
 // ----------------------------------------------------------------------------
-func TestHomeBaseCreation(t *testing.T) {
+func TestHomeBase_Creation(t *testing.T) {
 	base := createKnownHomeBase()
 
 	if base.centerX != 100 {
@@ -37,7 +37,7 @@ func TestHomeBaseCreation(t *testing.T) {
 }
 
 // ----------------------------------------------------------------------------
-func TestHomeBaseInit(t *testing.T) {
+func TestHomeBase_Init(t *testing.T) {
 	base := createDefaultHomeBase()
 
 	if base.centerX != KNOWN_X || base.centerY != KNOWN_Y {
@@ -50,7 +50,7 @@ func TestHomeBaseInit(t *testing.T) {
 }
 
 // ----------------------------------------------------------------------------
-func TestHomeBaseTakeDamage(t *testing.T) {
+func TestHomeBase_TakeDamage(t *testing.T) {
 	base := createKnownHomeBase()
 	base.TakeDamage(50)
 	if base.health != DEFAULT_HOMEBASE_HEALTH-50 {
@@ -59,7 +59,7 @@ func TestHomeBaseTakeDamage(t *testing.T) {
 }
 
 // ----------------------------------------------------------------------------
-func TestHomeBaseAbsorbShield(t *testing.T) {
+func TestHomeBase_AbsorbShield(t *testing.T) {
 	damageToTake := 750
 	shieldToAbsorb := 100
 	absorbedShield := shieldToAbsorb / 2
@@ -84,7 +84,7 @@ func TestHomeBaseAbsorbShield(t *testing.T) {
 }
 
 // ----------------------------------------------------------------------------
-func TestHomeBaseTakeDamageOutsized(t *testing.T) {
+func TestHomeBase_TakeDamageOutsized(t *testing.T) {
 	base := createKnownHomeBase()
 
 	base.TakeDamage(10_000_000)
@@ -96,7 +96,7 @@ func TestHomeBaseTakeDamageOutsized(t *testing.T) {
 }
 
 // ----------------------------------------------------------------------------
-func TestHomeBaseIsAlive(t *testing.T) {
+func TestHomeBase_IsAlive(t *testing.T) {
 	base := createKnownHomeBase()
 	base.health = 50
 
@@ -110,7 +110,7 @@ func TestHomeBaseIsAlive(t *testing.T) {
 }
 
 // ----------------------------------------------------------------------------
-func TestHomeBaseCreatePlayerBase(t *testing.T) {
+func TestHomeBase_CreatePlayerBase(t *testing.T) {
 	base := createPlayerHomeBase()
 
 	if base.side != PLAYER_SIDE {
@@ -119,7 +119,7 @@ func TestHomeBaseCreatePlayerBase(t *testing.T) {
 }
 
 // ----------------------------------------------------------------------------
-func TestHomeBaseCreateEnemyBase(t *testing.T) {
+func TestHomeBase_CreateEnemyBase(t *testing.T) {
 	base := createEnemyHomeBase()
 
 	if base.side != ENEMY_SIDE {
@@ -128,7 +128,7 @@ func TestHomeBaseCreateEnemyBase(t *testing.T) {
 }
 
 // ----------------------------------------------------------------------------
-func TestHomeBaseAdjustEnemyAttackAngle(t *testing.T) {
+func TestHomeBase_AdjustEnemyAttackAngle(t *testing.T) {
 	base := createEnemyHomeBase()
 	startAngle := base.attackAngle
 
@@ -165,7 +165,7 @@ func TestHomeBaseAdjustEnemyAttackAngle(t *testing.T) {
 }
 
 // ----------------------------------------------------------------------------
-func TestHomeBaseFireBouncer(t *testing.T) {
+func TestHomeBase_FireBouncer(t *testing.T) {
 	base := createDefaultHomeBase()
 
 	didFire, bouncer := base.FireBouncer()
@@ -191,5 +191,35 @@ func TestHomeBaseFireBouncer(t *testing.T) {
 
 	if base.bouncersAvailable != 0 {
 		t.Errorf("Expected no bouncers to be available, found %d", base.bouncersAvailable)
+	}
+}
+
+// ----------------------------------------------------------------------------
+func TestHomeBase_Update(t *testing.T) {
+	base := createDefaultHomeBase()
+
+	startBouncersAvailable := base.bouncersAvailable
+	startTicksTillNewBouncer := base.ticksTillNewBouncer
+
+	base.Update()
+
+	if base.bouncersAvailable == startBouncersAvailable {
+		t.Errorf("Expected %d bouncers available, got %d", startBouncersAvailable, base.bouncersAvailable)
+	}
+
+	if base.ticksTillNewBouncer == startTicksTillNewBouncer {
+		t.Errorf("Expected ticks till new bouncer to be different")
+	}
+
+	didFire, _ := base.FireBouncer()
+
+	if !didFire {
+		t.Errorf("Base was supposed to have been able to fire a bouncer")
+	}
+
+	base.Update()
+
+	if base.bouncersAvailable != 0 {
+		t.Errorf("Base is not supposed to have a bouncer available yet")
 	}
 }
