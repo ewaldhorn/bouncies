@@ -222,4 +222,40 @@ func TestHomeBase_Update(t *testing.T) {
 	if base.bouncersAvailable != 0 {
 		t.Errorf("Base is not supposed to have a bouncer available yet")
 	}
+
+	base.ticksTillNewBouncer = 1
+	base.ticksTillHealthRegeneration = 1
+	base.ticksTillCanMaybeFire = 2
+	base.health = 95
+	base.bouncersAvailable = DEFAULT_MAX_BOUNCERS
+	base.Update()
+
+	if base.ticksTillNewBouncer != 1 {
+		t.Errorf("Expected to be 1 tick away from getting a new bouncer, am %d ticks away", base.ticksTillNewBouncer)
+	}
+
+	if base.health != 100 {
+		t.Errorf("Expected base health to be 100, was %d", base.health)
+	}
+
+	if base.ticksTillHealthRegeneration != DEFAULT_TICKS_PER_SHIELD_REGEN {
+		t.Errorf("Expected delay until health generation to be %d, was %d", DEFAULT_TICKS_PER_SHIELD_REGEN, base.ticksTillHealthRegeneration)
+	}
+
+	if base.ticksTillCanMaybeFire != 1 {
+		t.Errorf("Expected ticks till can fire to be 2, was %d", base.ticksTillCanMaybeFire)
+	}
+
+	base.ticksTillHealthRegeneration = 1
+	base.health = DEFAULT_HOMEBASE_HEALTH - 2
+	base.Update()
+
+	if base.health != DEFAULT_HOMEBASE_HEALTH {
+		t.Errorf("Expected base health to be %d, was %d", DEFAULT_HOMEBASE_HEALTH, base.health)
+	}
+
+	if base.ticksTillCanMaybeFire != DEFAULT_FIRE_DELAY {
+		t.Errorf("Expected fire delay of %d, got %d", DEFAULT_FIRE_DELAY, base.ticksTillCanMaybeFire)
+	}
+
 }
