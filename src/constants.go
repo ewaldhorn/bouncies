@@ -21,5 +21,7 @@ const (
 
 const (
 	// Math constants
-	RADIAN float32 = (math.Pi / 180)
+	RADIAN           float32 = (math.Pi / 180)
+	ATTACK_ANGLE_MIN         = -120.0
+	ATTACK_ANGLE_MAX         = 28.0
 )

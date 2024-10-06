@@ -60,16 +60,20 @@ func TestHomeBaseTakeDamage(t *testing.T) {
 
 // ----------------------------------------------------------------------------
 func TestHomeBaseAbsorbShield(t *testing.T) {
-	base := createKnownHomeBase()
-	base.TakeDamage(750)
+	damageToTake := 750
+	shieldToAbsorb := 100
+	absorbedShield := shieldToAbsorb / 2
 
-	if base.health != DEFAULT_HOMEBASE_HEALTH-750 {
-		t.Errorf("Expected health to be %d, but got %d", DEFAULT_HOMEBASE_HEALTH-750, base.health)
+	base := createKnownHomeBase()
+	base.TakeDamage(damageToTake)
+
+	if base.health != DEFAULT_HOMEBASE_HEALTH-damageToTake {
+		t.Errorf("Expected health to be %d, but got %d", DEFAULT_HOMEBASE_HEALTH-damageToTake, base.health)
 	}
 
-	base.AbsorbShield(100) // remember absorb only takes half
-	if base.health != DEFAULT_HOMEBASE_HEALTH-700 {
-		t.Errorf("Expected health to be %d, but got %d", DEFAULT_HOMEBASE_HEALTH-700, base.health)
+	base.AbsorbShield(shieldToAbsorb) // remember absorb only takes half
+	if base.health != DEFAULT_HOMEBASE_HEALTH-damageToTake+absorbedShield {
+		t.Errorf("Expected health to be %d, but got %d", DEFAULT_HOMEBASE_HEALTH-damageToTake+absorbedShield, base.health)
 	}
 
 	base.AbsorbShield(5000)
@@ -102,5 +106,90 @@ func TestHomeBaseIsAlive(t *testing.T) {
 	base.TakeDamage(50)
 	if base.IsAlive() {
 		t.Errorf("Expected base to be dead, but it's not")
+	}
+}
+
+// ----------------------------------------------------------------------------
+func TestHomeBaseCreatePlayerBase(t *testing.T) {
+	base := createPlayerHomeBase()
+
+	if base.side != PLAYER_SIDE {
+		t.Errorf("Expected base to be the player base, it wasn't")
+	}
+}
+
+// ----------------------------------------------------------------------------
+func TestHomeBaseCreateEnemyBase(t *testing.T) {
+	base := createEnemyHomeBase()
+
+	if base.side != ENEMY_SIDE {
+		t.Errorf("Expected base to be the enemy base, it wasn't")
+	}
+}
+
+// ----------------------------------------------------------------------------
+func TestHomeBaseAdjustEnemyAttackAngle(t *testing.T) {
+	base := createEnemyHomeBase()
+	startAngle := base.attackAngle
+
+	base.AdjustEnemyAttackAngle(20)
+	if base.attackAngle != startAngle {
+		t.Errorf("Expected attack angle to not change from %f to %f", startAngle, base.attackAngle)
+	}
+
+	base.AdjustEnemyAttackAngle(19)
+	if base.attackAngle == startAngle {
+		t.Errorf("Expected attack angle to change from %f", startAngle)
+	}
+
+	base.AdjustEnemyAttackAngle(80)
+	if base.attackAngle == startAngle {
+		t.Errorf("Expected attack angle to not change from %f to %f", startAngle, base.attackAngle)
+	}
+
+	startAngle = base.attackAngle
+	base.AdjustEnemyAttackAngle(100)
+	if base.attackAngle == startAngle {
+		t.Errorf("Expected attack angle to change from %f (%f)", startAngle, base.attackAngle)
+	}
+
+	base.AdjustAttackAngle(-200)
+	if base.attackAngle != ATTACK_ANGLE_MIN {
+		t.Errorf("Expected attack angle to be %f, got %f", ATTACK_ANGLE_MIN, base.attackAngle)
+	}
+
+	base.AdjustAttackAngle(200)
+	if base.attackAngle != ATTACK_ANGLE_MAX {
+		t.Errorf("Expected attack angle to be %f, got %f", ATTACK_ANGLE_MAX, base.attackAngle)
+	}
+}
+
+// ----------------------------------------------------------------------------
+func TestHomeBaseFireBouncer(t *testing.T) {
+	base := createDefaultHomeBase()
+
+	didFire, bouncer := base.FireBouncer()
+
+	if didFire {
+		t.Errorf("Did not expect a bouncer to be fired!")
+	}
+
+	if bouncer != nil {
+		t.Errorf("Did not expect a bouncer to be returned!")
+	}
+
+	base.bouncersAvailable = 1
+	didFire, bouncer = base.FireBouncer()
+
+	if !didFire {
+		t.Errorf("Expect a bouncer to be fired!")
+	}
+
+	if bouncer == nil {
+		t.Errorf("Expect a bouncer to be returned!")
+	}
+
+	if base.bouncersAvailable != 0 {
+		t.Errorf("Expected no bouncers to be available, found %d", base.bouncersAvailable)
 	}
 }

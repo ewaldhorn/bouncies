@@ -179,26 +179,22 @@ func (h HomeBase) IsAlive() bool {
 
 // ----------------------------------------------------------------------------
 func (h *HomeBase) AdjustAttackAngle(num float64) {
-	if h.side == PLAYER_SIDE {
-		h.attackAngle += num
-	} else {
-		h.attackAngle -= num
+	h.attackAngle += num
+
+	if h.attackAngle < ATTACK_ANGLE_MIN {
+		h.attackAngle = ATTACK_ANGLE_MIN
 	}
 
-	if h.attackAngle < -120.0 {
-		h.attackAngle = -120.0
-	}
-
-	if h.attackAngle > 28.0 {
-		h.attackAngle = 28.0
+	if h.attackAngle > ATTACK_ANGLE_MAX {
+		h.attackAngle = ATTACK_ANGLE_MAX
 	}
 }
 
 // ----------------------------------------------------------------------------
-func (h *HomeBase) AdjustEnemyAttackAngle(direction int) {
-	if direction < 20 {
+func (h *HomeBase) AdjustEnemyAttackAngle(chance int) {
+	if chance < 20 {
 		h.AdjustAttackAngle(-2.0)
-	} else if direction > 80 {
+	} else if chance > 80 {
 		h.AdjustAttackAngle(2.0)
 	}
 }
