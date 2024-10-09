@@ -171,20 +171,27 @@ func (g *Game) Update() error {
 		// now check if any bouncers hit any other bouncers or obstacles
 		for outer := 0; outer < len(g.bouncers); outer++ {
 			var outerBouncer = g.bouncers[outer]
+			// only bother if the bouncer has health
 			if outerBouncer.health > 0 {
-				// only bother if the bouncer has health
-				for obstacle := 0; obstacle < len(g.obstacles); obstacle++ {
 
+				// first check obstacles
+				for obstacle := 0; obstacle < len(g.obstacles); obstacle++ {
 					var obs = g.obstacles[obstacle]
 					var diff = outerBouncer.radius
 
 					if outerBouncer.xPos+diff >= obs.xPos && outerBouncer.xPos-diff <= obs.xPos+obs.size &&
 						outerBouncer.yPos+diff >= obs.yPos && outerBouncer.yPos-diff <= obs.yPos+obs.size {
-						g.bouncers[outer].movementX *= -1
-						g.bouncers[outer].movementY *= -1
+						if rand.Int()%3 == 0 {
+							g.bouncers[outer].movementX *= -1
+						}
+
+						if rand.Int()%4 == 0 {
+							g.bouncers[outer].movementY *= -1
+						}
 					}
 				}
 
+				// now other bouncers
 				for inner := 0; inner < len(g.bouncers); inner++ {
 					if !g.bouncers[outer].hasBounced && g.bouncers[outer].id != g.bouncers[inner].id && g.bouncers[inner].health > 0 {
 						var ib = g.bouncers[inner]
