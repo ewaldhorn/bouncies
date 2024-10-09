@@ -19,6 +19,7 @@ var fontFace = text.NewGoXFace(bitmapfont.Face)
 type Game struct {
 	bases       []HomeBase
 	bouncers    []Bouncer
+	obstacles   []Obstacle
 	ebitenImage *ebiten.Image
 	action      int
 	isOver      bool
@@ -33,6 +34,16 @@ func (game *Game) initNewGame() {
 // ----------------------------------------------------------------------------
 func (game *Game) initBouncers() {
 	game.bouncers = make([]Bouncer, 0, 100)
+}
+
+// ----------------------------------------------------------------------------
+func (game *Game) initObstacles() {
+	game.obstacles = make([]Obstacle, 0, 5)
+
+	for i := 0; i < 5; i++ {
+		// ok, make a new obstacle
+		game.obstacles = append(game.obstacles, *CreateNewObstacle(float32(rand.IntN(350)+300), float32(rand.IntN(350)+180), float32(rand.IntN(20)+20), COLOUR_DARK_GRAY))
+	}
 }
 
 // ----------------------------------------------------------------------------
@@ -138,6 +149,10 @@ func (g *Game) Update() error {
 		g.updateBouncers()
 		g.updateBases()
 
+		////////////////////////////////////////////////////////////////////////////////////////
+		// TODO: Combine all hit tests into one loop, so we don't loop through bouncers twice //
+		////////////////////////////////////////////////////////////////////////////////////////
+
 		// check if bouncers have hit any bases
 		for hpos, base := range g.bases {
 			for pos, bouncer := range g.bouncers {
@@ -153,22 +168,34 @@ func (g *Game) Update() error {
 			}
 		}
 
-		// now check if any bouncers hit any other bouncers
+		// now check if any bouncers hit any other bouncers or obstacles
 		for outer := 0; outer < len(g.bouncers); outer++ {
-			var ob = g.bouncers[outer]
-			if ob.health > 0 {
+			var outerBouncer = g.bouncers[outer]
+			if outerBouncer.health > 0 {
 				// only bother if the bouncer has health
+				for obstacle := 0; obstacle < len(g.obstacles); obstacle++ {
+
+					var obs = g.obstacles[obstacle]
+					var diff = outerBouncer.radius
+
+					if outerBouncer.xPos+diff >= obs.xPos && outerBouncer.xPos-diff <= obs.xPos+obs.size &&
+						outerBouncer.yPos+diff >= obs.yPos && outerBouncer.yPos-diff <= obs.yPos+obs.size {
+						g.bouncers[outer].movementX *= -1
+						g.bouncers[outer].movementY *= -1
+					}
+				}
+
 				for inner := 0; inner < len(g.bouncers); inner++ {
 					if !g.bouncers[outer].hasBounced && g.bouncers[outer].id != g.bouncers[inner].id && g.bouncers[inner].health > 0 {
 						var ib = g.bouncers[inner]
 						var diff = g.bouncers[inner].radius * 2
 
-						if ob.xPos >= ib.xPos-diff && ob.xPos <= ib.xPos+diff &&
-							ob.yPos >= ib.yPos-diff && ob.yPos <= ib.yPos+diff {
+						if outerBouncer.xPos >= ib.xPos-diff && outerBouncer.xPos <= ib.xPos+diff &&
+							outerBouncer.yPos >= ib.yPos-diff && outerBouncer.yPos <= ib.yPos+diff {
 							// collided
 							g.bouncers[outer].hasBounced = true
 
-							if ob.side != ib.side {
+							if outerBouncer.side != ib.side {
 								g.bouncers[outer].TakeHit(15)
 								g.bouncers[inner].TakeHit(15)
 							} else {
@@ -249,6 +276,18 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	ebitenutil.DebugPrint(g.ebitenImage, str)
 
 	if !g.isOver {
+
+		for i := 0; i < len(g.obstacles); i++ {
+			g.obstacles[i].Draw(g.ebitenImage)
+
+			if IS_DEBUGGING {
+				xpos := g.obstacles[i].xPos
+				ypos := g.obstacles[i].yPos
+				size := g.obstacles[i].size
+				vector.StrokeRect(g.ebitenImage, xpos, ypos, size, size, 1.0, COLOUR_WHITE, true)
+			}
+		}
+
 		for i := 0; i < len(g.bouncers); i++ {
 			g.bouncers[i].Draw(g.ebitenImage)
 		}

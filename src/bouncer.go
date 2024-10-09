@@ -176,6 +176,7 @@ func (b Bouncer) Draw(screen *ebiten.Image) {
 	vector.DrawFilledCircle(screen, b.xPos, b.yPos, b.radius, b.colour, true)
 
 	if IS_DEBUGGING {
-		vector.StrokeRect(screen, b.xPos-b.radius, b.yPos-b.radius, b.radius*2, b.radius*2, 2, COLOUR_BLUE, true)
+		var diff = b.radius + 2
+		vector.StrokeRect(screen, b.xPos-diff, b.yPos-diff, diff*2, diff*2, 1, COLOUR_WHITE, true)
 	}
 }

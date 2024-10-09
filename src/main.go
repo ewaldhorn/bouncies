@@ -25,6 +25,7 @@ func main() {
 	game := Game{}
 	game.initNewGame()
 	game.initBouncers()
+	game.initObstacles()
 
 	err := ebiten.RunGame(&game)
 
