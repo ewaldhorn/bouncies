@@ -54,6 +54,13 @@ func (game *Game) updateBouncers() {
 }
 
 // ----------------------------------------------------------------------------
+func (game *Game) updateObstacles() {
+	for pos := range game.obstacles {
+		game.obstacles[pos].Update()
+	}
+}
+
+// ----------------------------------------------------------------------------
 func (g *Game) updateBases() {
 	for pos := range g.bases {
 		g.bases[pos].Update()
@@ -148,6 +155,7 @@ func (g *Game) Update() error {
 		// now for game object updates
 		g.updateBouncers()
 		g.updateBases()
+		g.updateObstacles()
 
 		////////////////////////////////////////////////////////////////////////////////////////
 		// TODO: Combine all hit tests into one loop, so we don't loop through bouncers twice //

@@ -38,7 +38,7 @@ func CreateNewObstacle(xPos, yPos, Size float32, colour color.RGBA) *Obstacle {
 	}
 
 	obstacle.initHealth()
-	obstacle.nextMove = rand.IntN(100) + 200
+	obstacle.PerformMove()
 
 	return &obstacle
 }
@@ -55,7 +55,7 @@ func (obstacle *Obstacle) TakeHit(num int) {
 
 // ----------------------------------------------------------------------------
 func (obstacle *Obstacle) PerformMove() {
-	chance := rand.Int()%4 == 0
+	chance := rand.Int()%2 == 0
 	dir := rand.IntN(4000)
 
 	if chance {
@@ -72,7 +72,7 @@ func (obstacle *Obstacle) PerformMove() {
 		}
 	}
 
-	obstacle.nextMove = rand.IntN(100) + 200
+	obstacle.nextMove = rand.IntN(50) + 50
 }
 
 // ----------------------------------------------------------------------------
