@@ -196,6 +196,7 @@ func (g *Game) Update() error {
 						if rand.Int()%4 == 0 {
 							g.bouncers[outer].movementY *= -1
 						}
+						obs.TakeHit(1)
 					}
 				}
 
@@ -274,6 +275,21 @@ func (g *Game) Update() error {
 			}
 		}
 		g.bouncers = tmpBouncers
+
+		// remove dead obstacles
+		tmpObstacles := make([]Obstacle, 0, 10)
+		for _, obstacle := range g.obstacles {
+			if obstacle.health > 0 {
+				tmpObstacles = append(tmpObstacles, obstacle)
+			}
+		}
+
+		// if we don't have enough obstacles, add one
+		if len(tmpObstacles) < 2 {
+			tmpObstacles = append(tmpObstacles, *CreateNewObstacle(float32(rand.IntN(350)+300), float32(rand.IntN(350)+180), float32(rand.IntN(20)+20), COLOUR_DARK_GRAY))
+		}
+
+		g.obstacles = tmpObstacles
 
 		g.checkForGameEnders()
 

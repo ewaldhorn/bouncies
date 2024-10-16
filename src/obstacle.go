@@ -10,6 +10,8 @@ import (
 
 var currentObstacleId = 0
 
+const obstacleInitialHealth = 400
+
 // ----------------------------------------------------------------------------
 type Obstacle struct {
 	id                int
@@ -22,7 +24,7 @@ type Obstacle struct {
 // ----------------------------------------------------------------------------
 // Sets the Obstacle's health to its maximum value.
 func (obstacle *Obstacle) initHealth() {
-	obstacle.maxHealth = initialHealth
+	obstacle.maxHealth = obstacleInitialHealth
 	obstacle.health = obstacle.maxHealth
 }
 
@@ -76,9 +78,15 @@ func (obstacle *Obstacle) PerformMove() {
 }
 
 // ----------------------------------------------------------------------------
+// Called once per frame, and handles several things:
+// - checks if it's time to spawn a new bouncer
+// - checks if it's time to regenerate some health
+// - checks if it's time to be able to fire yet
 func (obstacle *Obstacle) Update() {
 	if obstacle.health < 30 {
 		obstacle.TakeHit(1)
+	} else if obstacle.health < obstacle.maxHealth {
+		obstacle.TakeHit(-1)
 	}
 	obstacle.nextMove -= 1
 
