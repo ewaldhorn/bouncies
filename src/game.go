@@ -333,6 +333,10 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		won := g.bases[PLAYER_SIDE].health > 0
 		renderGameOverText(screen, won)
 	}
+
+	if !ebiten.IsFocused() && !g.isOver {
+		renderGameOverlayMessage(screen, "Game Paused")
+	}
 }
 
 // ----------------------------------------------------------------------------
@@ -350,6 +354,15 @@ func renderGameOverText(screen *ebiten.Image, won bool) {
 
 	textOp.GeoM.Translate(float64(SCREEN_WIDTH)/2-(tw/2), float64(SCREEN_HEIGHT)/2-(th/2))
 	text.Draw(screen, str, fontFace, textOp)
+}
+
+// ----------------------------------------------------------------------------
+func renderGameOverlayMessage(screen *ebiten.Image, msg string) {
+	textOptions := &text.DrawOptions{}
+
+	textWidth, textHeight := text.Measure(msg, fontFace, textOptions.LineSpacing)
+	textOptions.GeoM.Translate(float64(SCREEN_WIDTH)/2-(textWidth/2), float64(SCREEN_HEIGHT)/2-(textHeight/2))
+	text.Draw(screen, msg, fontFace, textOptions)
 }
 
 // ----------------------------------------------------------------------------

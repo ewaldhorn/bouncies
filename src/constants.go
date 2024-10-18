@@ -16,7 +16,7 @@ const (
 	DEFAULT_MAX_BOUNCERS              int     = 8
 	DEFAULT_FIRE_DELAY                int     = 80
 	DEFAULT_TICKS_PER_BOUNCER_RESPAWN int     = 70
-	DEFAULT_TICKS_PER_SHIELD_REGEN    int     = 40
+	DEFAULT_TICKS_PER_SHIELD_REGEN    int     = 50
 )
 
 const (
