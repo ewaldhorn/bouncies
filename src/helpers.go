@@ -4,6 +4,7 @@ import (
 	"image"
 	"image/color"
 	"log"
+	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
@@ -80,4 +81,11 @@ func drawFilledArc(screen *ebiten.Image, centerX, centerY, radius, startAngle, e
 	drawOptions.ColorScaleMode = ebiten.ColorScaleModePremultipliedAlpha
 	drawOptions.AntiAlias = true
 	screen.DrawTriangles(vertices, indices, whiteSubImage, drawOptions)
+}
+
+// ----------------------------------------------------------------------------
+const float64EqualityThreshold = 1e-9
+
+func almostEqual(a, b float64) bool {
+	return math.Abs(a-b) <= float64EqualityThreshold
 }
