@@ -42,7 +42,7 @@ func (game *Game) initObstacles() {
 
 	for i := 0; i < 5; i++ {
 		// ok, make a new obstacle
-		game.obstacles = append(game.obstacles, *CreateNewObstacle(float32(rand.IntN(350)+300), float32(rand.IntN(350)+180), COLOUR_DARK_GRAY))
+		game.obstacles = append(game.obstacles, *CreateNewObstacle(float32(rand.IntN(350)+300), float32(rand.IntN(350)+200), COLOUR_DARK_GRAY))
 	}
 }
 

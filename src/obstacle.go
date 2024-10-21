@@ -77,7 +77,7 @@ func (obstacle *Obstacle) PerformMove() {
 		}
 	}
 
-	obstacle.nextMove = rand.IntN(50) + 50
+	obstacle.nextMove = rand.IntN(30) + 20
 }
 
 // ----------------------------------------------------------------------------
