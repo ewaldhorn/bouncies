@@ -42,7 +42,7 @@ func (game *Game) initObstacles() {
 
 	for i := 0; i < 5; i++ {
 		// ok, make a new obstacle
-		game.obstacles = append(game.obstacles, *CreateNewObstacle(float32(rand.IntN(350)+300), float32(rand.IntN(350)+180), float32(rand.IntN(20)+20), COLOUR_DARK_GRAY))
+		game.obstacles = append(game.obstacles, *CreateNewObstacle(float32(rand.IntN(350)+300), float32(rand.IntN(350)+180), COLOUR_DARK_GRAY))
 	}
 }
 
@@ -196,7 +196,9 @@ func (g *Game) Update() error {
 						if rand.Int()%4 == 0 {
 							g.bouncers[outer].movementY *= -1
 						}
-						obs.TakeHit(1)
+
+						g.obstacles[obstacle].TakeHit(4)
+						g.bouncers[outer].TakeHit(1)
 					}
 				}
 
@@ -286,7 +288,7 @@ func (g *Game) Update() error {
 
 		// if we don't have enough obstacles, add one
 		if len(tmpObstacles) < 2 {
-			tmpObstacles = append(tmpObstacles, *CreateNewObstacle(float32(rand.IntN(350)+300), float32(rand.IntN(350)+180), float32(rand.IntN(20)+20), COLOUR_DARK_GRAY))
+			tmpObstacles = append(tmpObstacles, *CreateNewObstacle(float32(rand.IntN(350)+300), float32(rand.IntN(350)+180), COLOUR_DARK_GRAY))
 		}
 
 		g.obstacles = tmpObstacles
