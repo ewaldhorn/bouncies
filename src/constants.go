@@ -14,9 +14,9 @@ const (
 	DEFAULT_BASE_COUNT                int     = 2
 	DEFAULT_BASE_OFFSET_BUFFER        float32 = 2.0
 	DEFAULT_MAX_BOUNCERS              int     = 8
-	DEFAULT_FIRE_DELAY                int     = 80
-	DEFAULT_TICKS_PER_BOUNCER_RESPAWN int     = 70
-	DEFAULT_TICKS_PER_SHIELD_REGEN    int     = 50
+	DEFAULT_FIRE_DELAY                int     = 70
+	DEFAULT_TICKS_PER_BOUNCER_RESPAWN int     = 80
+	DEFAULT_TICKS_PER_SHIELD_REGEN    int     = 60
 )
 
 const (
