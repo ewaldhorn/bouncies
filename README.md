@@ -17,6 +17,9 @@ This works best on a computer, though there's support planned for tablets eventu
 
 ![Screen Shot](./screenshot.png "Screenshot")
 
+There's an improved game at <https://nofuss.co.za/toys/harvesteriii/> for anyone interested in
+something a bit different.
+
 ## What
 
 The number one question I've received after some of my talks (list here: <https://nofuss.co.za/about/>)
