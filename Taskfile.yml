@@ -70,3 +70,8 @@ tasks:
       - go test -coverprofile=coverage.out ./src/.
       - go tool cover -html=coverage.out
     silent: true
+  updateDependencies:
+    desc: Updates Go dependencies
+    cmds:
+      - go get -u ./...
+    silent: true
