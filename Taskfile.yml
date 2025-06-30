@@ -21,7 +21,7 @@ tasks:
     desc: Copies the wasm_exec.js and html files to the '{{.OUTPUT_FOLDER}}' folder
     cmds:
       - mkdir -p {{.OUTPUT_FOLDER}}
-      - cp $(go env GOROOT)/misc/wasm/wasm_exec.js {{.OUTPUT_FOLDER}}
+      - cp $(go env GOROOT)/lib/wasm/wasm_exec.js {{.OUTPUT_FOLDER}}
       - cp ./html/* {{.OUTPUT_FOLDER}}
     silent: true
   play:
