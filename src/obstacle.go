@@ -10,8 +10,8 @@ import (
 
 var currentObstacleId = 0
 
-const obstacleInitialHealth = 400
-const obstacleSize = 32
+const obstacleInitialHealth = 800
+const obstacleSize = 64
 
 // ----------------------------------------------------------------------------
 type Obstacle struct {
@@ -88,7 +88,7 @@ func (obstacle *Obstacle) Update() {
 		obstacle.healthTimer = 0
 
 		if obstacle.health < obstacle.maxHealth {
-			obstacle.TakeHit(-1)
+			obstacle.TakeHit(-2)
 		}
 	}
 

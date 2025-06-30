@@ -40,9 +40,9 @@ func (game *Game) initBouncers() {
 func (game *Game) initObstacles() {
 	game.obstacles = make([]Obstacle, 0, 5)
 
-	for i := 0; i < 5; i++ {
+	for range 8 {
 		// ok, make a new obstacle
-		game.obstacles = append(game.obstacles, *CreateNewObstacle(float32(rand.IntN(350)+300), float32(rand.IntN(350)+200), COLOUR_DARK_GRAY))
+		game.obstacles = append(game.obstacles, *CreateNewObstacle(float32(rand.IntN(300)+SCREEN_WIDTH/4), float32(rand.IntN(300)+SCREEN_HEIGHT/4), COLOUR_DARK_GRAY))
 	}
 }
 
